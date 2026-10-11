@@ -3,13 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Rankdesk SEO Toolkit</title>
+<title>Rankdesk: Free SEO Audit Tool &amp; Meta Tag Generator</title>
 <meta name="description" content="Free all-in-one SEO toolkit: audit any URL, check meta tags, robots.txt, sitemap and PageSpeed, and generate schema, hashtags, keyword ideas and sitemaps.">
 <link rel="canonical" href="{{SITE_URL}}/">
 <meta property="og:title" content="{{SITE_NAME}} SEO Toolkit">
 <meta property="og:description" content="Audit any URL and generate meta tags, schema, hashtags and sitemaps in one place.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{SITE_URL}}/">
+<meta property="og:site_name" content="{{SITE_NAME}}">
+<meta property="og:image" content="{{SITE_URL}}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Rankdesk: free SEO audit and toolkit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rankdesk: Free SEO Audit Tool &amp; Meta Tag Generator">
+<meta name="twitter:description" content="Audit any URL and generate meta tags, schema, hashtags and sitemaps in one place.">
+<meta name="twitter:image" content="{{SITE_URL}}/og.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0e1413">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "{{SITE_NAME}}",
+      "url": "{{SITE_URL}}/",
+      "description": "Free all-in-one SEO toolkit: audit any URL for meta tags, headings, schema, robots.txt, sitemap and PageSpeed, and generate meta tags, schema, hashtags, keyword ideas and sitemaps.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any",
+      "image": "{{SITE_URL}}/og.png",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" }
+    },
+    {
+      "@type": "Organization",
+      "name": "{{SITE_NAME}}",
+      "url": "{{SITE_URL}}/",
+      "logo": "{{SITE_URL}}/apple-touch-icon.png",
+      "email": "{{CONTACT_EMAIL}}"
+    }
+  ]
+}
+</script>
 <!--ADS_HEAD-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -42,7 +79,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1
 .brand{display:flex;align-items:baseline;gap:6px;padding-inline:8px;margin-bottom:4px}
 .brand b{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.02em}
 .brand span{font-family:var(--f-mono);font-size:11px;color:var(--accent)}
-.tag{padding-inline:8px;color:var(--muted);font-size:12.5px;margin:0 0 18px}
+.tag{padding-inline:8px;color:var(--muted);font-size:12.5px;font-weight:400;line-height:1.5;margin:0 0 18px}
 .nav{display:flex;flex-direction:column;gap:2px}
 .nav button{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;border-radius:6px;font-weight:500;color:var(--ink)}
 .nav button small{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
@@ -51,12 +88,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1
 .nav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .main{padding-block:28px 60px;padding-inline:clamp(16px,3vw,40px);min-width:0}
 .panel-head{max-width:860px;margin-bottom:22px}
-.panel-head h1{font-family:var(--f-display);font-weight:800;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.panel-head h2{font-family:var(--f-display);font-weight:800;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
 .panel-head p{margin:0;color:var(--muted);max-width:68ch}
 .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
 .cols > *{min-width:0}
 .box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
-.box h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 14px;font-weight:600}
+.box h3{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 14px;font-weight:600}
 .stack{display:flex;flex-direction:column;gap:14px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600}
@@ -113,8 +150,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-
 .chip{font-family:var(--f-mono);font-size:12.5px;padding:4px 9px;border-radius:5px;background:var(--sunk);border:1px solid var(--line);cursor:pointer}
 .chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .grp{display:flex;flex-direction:column;gap:8px}
-.grp h3{margin:0;font-size:13px;font-weight:600}
-.grp h3 span{color:var(--muted);font-weight:400}
+.grp h4{margin:0;font-size:13px;font-weight:600}
+.grp h4 span{color:var(--muted);font-weight:400}
 .toggles{display:flex;flex-wrap:wrap;gap:14px}
 .toggles label{flex-direction:row;align-items:center;gap:6px;font-weight:500}
 .toggles input{width:auto}
@@ -193,7 +230,7 @@ details.box[open] summary{margin-bottom:12px}
 <div class="app">
   <aside class="rail">
     <div class="brand"><b>Rankdesk</b><span>v0.1</span></div>
-    <p class="tag">Every SEO check and generator in one place.</p>
+    <h1 class="tag">Free SEO audit tool and toolkit: every check and generator in one place.</h1>
     <nav class="nav" role="tablist" aria-label="Tools">
       <button role="tab" data-tab="audit" aria-selected="true">Page audit <small>HTML</small></button>
       <button role="tab" data-tab="meta" aria-selected="false">Meta &amp; SERP <small>&lt;head&gt;</small></button>
@@ -213,7 +250,7 @@ details.box[open] summary{margin-bottom:12px}
   <!-- AUDIT -->
   <section id="tab-audit" data-panel>
     <div class="panel-head">
-      <h1>Page audit</h1>
+      <h2>Page audit</h2>
       <p>Enter any page URL to check its meta tags, headings, images and schema, plus the server response, robots.txt, sitemap and Google PageSpeed scores.</p>
     </div>
     <form class="urlbar box" id="au-form" novalidate>
@@ -237,12 +274,12 @@ details.box[open] summary{margin-bottom:12px}
             </div>
           </div>
         </div>
-        <div class="box"><h2>On-page checks</h2><ul class="checks" id="au-checks"></ul></div>
-        <div class="box"><h2>Heading outline</h2><ul class="outline" id="au-outline"></ul></div>
+        <div class="box"><h3>On-page checks</h3><ul class="checks" id="au-checks"></ul></div>
+        <div class="box"><h3>Heading outline</h3><ul class="outline" id="au-outline"></ul></div>
       </div>
       <div class="stack">
-        <div class="box"><h2>Server &amp; crawling</h2><ul class="checks" id="au-server"><li><span class="st info">Waiting</span><div><b>Run a URL audit</b><div class="d">Status code, redirects, HTTPS, response time, robots.txt and sitemap appear here.</div></div></li></ul></div>
-        <div class="box"><h2>Google PageSpeed</h2><div id="au-psi"><p class="note">Speed and Core Web Vitals from Google appear here after a URL audit. This step takes 20–60 seconds.</p></div></div>
+        <div class="box"><h3>Server &amp; crawling</h3><ul class="checks" id="au-server"><li><span class="st info">Waiting</span><div><b>Run a URL audit</b><div class="d">Status code, redirects, HTTPS, response time, robots.txt and sitemap appear here.</div></div></li></ul></div>
+        <div class="box"><h3>Google PageSpeed</h3><div id="au-psi"><p class="note">Speed and Core Web Vitals from Google appear here after a URL audit. This step takes 20–60 seconds.</p></div></div>
         <details class="box" id="au-paste">
           <summary>Audit pasted HTML instead</summary>
           <div class="stack">
@@ -261,12 +298,12 @@ details.box[open] summary{margin-bottom:12px}
   <!-- META -->
   <section id="tab-meta" data-panel hidden>
     <div class="panel-head">
-      <h1>Meta tags &amp; Google preview</h1>
+      <h2>Meta tags &amp; Google preview</h2>
       <p>Fill in the page details to get title, description, canonical, Open Graph and Twitter tags, with a live preview of the Google result.</p>
     </div>
     <div class="cols">
       <div class="box stack">
-        <h2>Page details <span class="ex">example</span></h2>
+        <h3>Page details <span class="ex">example</span></h3>
         <label><span class="lbl">Title tag <span class="count" id="mt-title-c"></span></span>
           <input id="mt-title" value="Pure Silk Sarees Wholesale in Surat | Shree Textiles"></label>
         <label><span class="lbl">Meta description <span class="count" id="mt-desc-c"></span></span>
@@ -286,7 +323,7 @@ details.box[open] summary{margin-bottom:12px}
       </div>
       <div class="stack">
         <div class="box stack">
-          <h2>Google preview</h2>
+          <h3>Google preview</h3>
           <div class="serp">
             <div class="site"><div class="fav" id="sp-fav">S</div><div><div class="sn" id="sp-name"></div><div class="su" id="sp-url"></div></div></div>
             <div class="st2" id="sp-title"></div>
@@ -297,7 +334,7 @@ details.box[open] summary{margin-bottom:12px}
             <div><div class="lbl" style="font-size:12px"><span>Description width</span><span class="count" id="sp-dw"></span></div><div class="meter"><i id="sp-dm"></i></div></div>
           </div>
         </div>
-        <div class="box"><h2>Paste into &lt;head&gt;</h2><div class="out"><button class="copy" data-copy="mt-out" type="button">Copy</button><pre id="mt-out"></pre></div></div>
+        <div class="box"><h3>Paste into &lt;head&gt;</h3><div class="out"><button class="copy" data-copy="mt-out" type="button">Copy</button><pre id="mt-out"></pre></div></div>
       </div>
     </div>
   </section>
@@ -305,12 +342,12 @@ details.box[open] summary{margin-bottom:12px}
   <!-- SCHEMA -->
   <section id="tab-schema" data-panel hidden>
     <div class="panel-head">
-      <h1>Schema generator</h1>
+      <h2>Schema generator</h2>
       <p>Structured data helps Google show rich results like ratings, FAQs and business details. Pick a type, fill the fields, and paste the script into the page.</p>
     </div>
     <div class="cols">
       <div class="box stack">
-        <h2>Fields <span class="ex">example</span></h2>
+        <h3>Fields <span class="ex">example</span></h3>
         <label>Schema type
           <select id="sc-type">
             <option value="LocalBusiness">Local business</option>
@@ -322,7 +359,7 @@ details.box[open] summary{margin-bottom:12px}
         <div class="stack" id="sc-fields"></div>
       </div>
       <div class="stack">
-        <div class="box"><h2>JSON-LD</h2><div class="out"><button class="copy" data-copy="sc-out" type="button">Copy</button><pre id="sc-out"></pre></div></div>
+        <div class="box"><h3>JSON-LD</h3><div class="out"><button class="copy" data-copy="sc-out" type="button">Copy</button><pre id="sc-out"></pre></div></div>
         <p class="note">After publishing, test the page in Google's Rich Results Test (link in Free data tools).</p>
       </div>
     </div>
@@ -331,12 +368,12 @@ details.box[open] summary{margin-bottom:12px}
   <!-- SOCIAL -->
   <section id="tab-social" data-panel hidden>
     <div class="panel-head">
-      <h1>Social pack</h1>
+      <h2>Social pack</h2>
       <p>Hashtags, an Instagram name and bio, and YouTube tags built from the brand, niche and city. Click hashtags to add or remove them from the copy set.</p>
     </div>
     <div class="cols">
       <div class="box stack">
-        <h2>Brand details <span class="ex">example</span></h2>
+        <h3>Brand details <span class="ex">example</span></h3>
         <label>Brand name <input id="so-brand" value="Shree Textiles"></label>
         <label>Niche keywords <span class="hint">Comma separated, most important first</span>
           <input id="so-niche" value="silk saree, banarasi saree, wedding saree, saree wholesale"></label>
@@ -351,19 +388,19 @@ details.box[open] summary{margin-bottom:12px}
       </div>
       <div class="stack">
         <div class="box stack">
-          <h2>Hashtags</h2>
+          <h3>Hashtags</h3>
           <div id="so-groups" class="stack"></div>
           <div class="out"><button class="copy" data-copy="so-tags" type="button">Copy</button><pre id="so-tags"></pre></div>
         </div>
         <div class="box stack">
-          <h2>Instagram profile</h2>
+          <h3>Instagram profile</h3>
           <label><span class="lbl">Name field (searchable) <span class="count" id="so-name-c"></span></span></label>
           <div class="out"><button class="copy" data-copy="so-name" type="button">Copy</button><pre id="so-name"></pre></div>
           <label><span class="lbl">Bio <span class="count" id="so-bio-c"></span></span></label>
           <div class="out"><button class="copy" data-copy="so-bio" type="button">Copy</button><pre id="so-bio"></pre></div>
         </div>
         <div class="box stack">
-          <h2>YouTube tags <span class="count" id="so-yt-c"></span></h2>
+          <h3>YouTube tags <span class="count" id="so-yt-c"></span></h3>
           <div class="out"><button class="copy" data-copy="so-yt" type="button">Copy</button><pre id="so-yt" style="white-space:pre-wrap"></pre></div>
         </div>
       </div>
@@ -373,12 +410,12 @@ details.box[open] summary{margin-bottom:12px}
   <!-- KEYWORDS -->
   <section id="tab-keywords" data-panel hidden>
     <div class="panel-head">
-      <h1>Keyword ideas</h1>
+      <h2>Keyword ideas</h2>
       <p>Expand a seed keyword into the searches people actually type: local, buying, price and question forms. Check search volume for the ones you keep in Keyword Planner or Google Trends.</p>
     </div>
     <div class="cols">
       <div class="box stack">
-        <h2>Seeds <span class="ex">example</span></h2>
+        <h3>Seeds <span class="ex">example</span></h3>
         <label>Seed keywords <span class="hint">One per line</span>
           <textarea id="kw-seed" rows="3">silk saree
 banarasi saree</textarea></label>
@@ -394,7 +431,7 @@ banarasi saree</textarea></label>
       </div>
       <div class="stack">
         <div class="box stack">
-          <div class="lbl"><h2 style="margin:0">Ideas</h2><button class="copy" data-copy="kw-plain" type="button">Copy list</button></div>
+          <div class="lbl"><h3 style="margin:0">Ideas</h3><button class="copy" data-copy="kw-plain" type="button">Copy list</button></div>
           <div class="tbl"><table><thead><tr><th>Keyword</th><th>Intent</th></tr></thead><tbody id="kw-body"></tbody></table></div>
           <pre id="kw-plain" hidden></pre>
         </div>
@@ -405,12 +442,12 @@ banarasi saree</textarea></label>
   <!-- ROBOTS -->
   <section id="tab-robots" data-panel hidden>
     <div class="panel-head">
-      <h1>Robots.txt &amp; sitemap</h1>
+      <h2>Robots.txt &amp; sitemap</h2>
       <p>Generate both files for the site root. Upload them so they open at yourdomain.com/robots.txt and yourdomain.com/sitemap.xml, then submit the sitemap in Search Console.</p>
     </div>
     <div class="cols">
       <div class="box stack">
-        <h2>Site <span class="ex">example</span></h2>
+        <h3>Site <span class="ex">example</span></h3>
         <label>Domain <input id="rb-domain" value="https://shreetextiles.in"></label>
         <label>Pages to include <span class="hint">One path per line</span>
           <textarea id="rb-paths" rows="7">/
@@ -426,8 +463,8 @@ banarasi saree</textarea></label>
         <label>Update frequency <select id="rb-freq"><option>daily</option><option selected>weekly</option><option>monthly</option><option>yearly</option></select></label>
       </div>
       <div class="stack">
-        <div class="box"><h2>robots.txt</h2><div class="out"><button class="copy" data-copy="rb-robots" type="button">Copy</button><pre id="rb-robots"></pre></div></div>
-        <div class="box"><h2>sitemap.xml</h2><div class="out"><button class="copy" data-copy="rb-sitemap" type="button">Copy</button><pre id="rb-sitemap"></pre></div></div>
+        <div class="box"><h3>robots.txt</h3><div class="out"><button class="copy" data-copy="rb-robots" type="button">Copy</button><pre id="rb-robots"></pre></div></div>
+        <div class="box"><h3>sitemap.xml</h3><div class="out"><button class="copy" data-copy="rb-sitemap" type="button">Copy</button><pre id="rb-sitemap"></pre></div></div>
       </div>
     </div>
   </section>
@@ -435,7 +472,7 @@ banarasi saree</textarea></label>
   <!-- TOOLS -->
   <section id="tab-tools" data-panel hidden>
     <div class="panel-head">
-      <h1>Free data tools</h1>
+      <h2>Free data tools</h2>
       <p>Live data such as search volume, real rankings and backlinks comes from these services. Each opens in a new tab.</p>
     </div>
     <div id="tl-list"></div>
@@ -835,7 +872,7 @@ function social(){
     ['Branded',"yours only",uniq([slug(brand), slug(brand)+cs])],
     ['Community',"broader audience",uniq(words.slice(0,2).flatMap(w=>[w+'lovers',w+'collection'])).concat(ct?['madein'+ct]:[])]
   ];
-  $('so-groups').innerHTML=groups.map(([g,hint,tags])=>`<div class="grp"><h3>${g} <span>${hint}</span></h3><div class="chips">${tags.map(t=>`<button type="button" class="chip${soOff.has(t)?'':' on'}" data-tag="${esc(t)}">#${esc(t)}</button>`).join('')}</div></div>`).join('');
+  $('so-groups').innerHTML=groups.map(([g,hint,tags])=>`<div class="grp"><h4>${g} <span>${hint}</span></h4><div class="chips">${tags.map(t=>`<button type="button" class="chip${soOff.has(t)?'':' on'}" data-tag="${esc(t)}">#${esc(t)}</button>`).join('')}</div></div>`).join('');
   // pick balanced order: niche, local, branded, niche, local, community...
   const pools=groups.map(g=>g[2].filter(t=>!soOff.has(t)));
   const pick=[]; let i=0;
@@ -918,7 +955,7 @@ const TOOLS=[
     ['Google Search Central','Google\'s own SEO documentation and guidelines.','https://developers.google.com/search/docs','Free']
   ]]
 ];
-$('tl-list').innerHTML=TOOLS.map(([sec,items],i)=>`<h2 class="sec-title"${i===0?' style="margin-top:0"':''}>${sec}</h2><div class="tgrid">${items.map(([n,d,u,c])=>`<a class="tool" href="${u}" target="_blank" rel="noopener"><b>${esc(n)}</b><span>${esc(d)}</span><em>${esc(c)}</em></a>`).join('')}</div>`).join('');
+$('tl-list').innerHTML=TOOLS.map(([sec,items],i)=>`<h3 class="sec-title"${i===0?' style="margin-top:0"':''}>${sec}</h3><div class="tgrid">${items.map(([n,d,u,c])=>`<a class="tool" href="${u}" target="_blank" rel="noopener"><b>${esc(n)}</b><span>${esc(d)}</span><em>${esc(c)}</em></a>`).join('')}</div>`).join('');
 })();
 </script>
 </body>
