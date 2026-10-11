@@ -203,13 +203,24 @@ app.get('/api/robots', async (req, res) => {
         out.robots.text = r.body.slice(0, 4000);
         Object.assign(out, robotsBlocks(r.body, u.pathname + u.search));
         sitemapUrls = [...r.body.matchAll(/^\s*sitemap\s*:\s*(\S+)/gim)].map(m => m[1]);
+        out.disallow = [...new Set([...r.body.matchAll(/^\s*disallow\s*:\s*(\S+)/gim)].map(m => m[1]))].slice(0, 20);
       }
     } catch (e) { out.robots.error = e.message; }
     if (!sitemapUrls.length) sitemapUrls = [origin + '/sitemap.xml'];
+    // page paths on this site, taken from the sitemap (follows one child sitemap of an index)
+    out.paths = [];
+    const locs = body => [...body.matchAll(/<loc>\s*(?:<!\[CDATA\[)?\s*([^<\]\s]+)/gi)].map(m => m[1].replace(/&amp;/g, '&'));
+    const addPaths = body => locs(body).forEach(l => { try { const x = new URL(l); if (x.hostname.replace(/^www\./, '') === u.hostname.replace(/^www\./, '') && out.paths.length < 50 && !out.paths.includes(x.pathname)) out.paths.push(x.pathname); } catch {} });
     for (const sm of sitemapUrls.slice(0, 3)) {
       try {
         const r = await guardedFetch(sm, { maxBytes: 10 * 1024 * 1024, timeout: 12000 });
         const isXml = r.status === 200 && /<(urlset|sitemapindex)/i.test(r.body);
+        if (isXml && !out.paths.length) {
+          if (/<sitemapindex/i.test(r.body)) {
+            const child = locs(r.body)[0];
+            if (child) { try { const c = await guardedFetch(child, { maxBytes: 10 * 1024 * 1024, timeout: 12000 }); if (c.status === 200) addPaths(c.body); } catch {} }
+          } else addPaths(r.body);
+        }
         out.sitemaps.push({ url: sm, status: r.status, valid: isXml, isIndex: /<sitemapindex/i.test(r.body), urls: isXml ? (r.body.match(/<loc>/gi) || []).length : 0,
           listsPage: isXml ? r.body.includes(u.href) || r.body.includes(u.href.replace(/\/$/, '')) : false });
       } catch (e) { out.sitemaps.push({ url: sm, status: null, valid: false, error: e.message }); }

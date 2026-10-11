@@ -173,6 +173,7 @@ td.k{font-family:var(--f-mono);font-size:12.5px}
 .tool em{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--accent)}
 .sec-title{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:26px 0 10px;font-weight:600}
 .note{font-size:13px;color:var(--muted);background:var(--sunk);border-radius:6px;padding:10px 12px;margin:0}
+.ex.src{color:var(--accent);background:var(--accent-soft);text-transform:none}
 .ex{font-family:var(--f-mono);font-size:10.5px;color:var(--warn);background:var(--warn-soft);padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
 .theme{all:unset;cursor:pointer;margin-top:18px;margin-inline:8px;font-size:12px;color:var(--muted)}
 .theme:focus-visible{outline:2px solid var(--accent)}
@@ -419,7 +420,9 @@ details.box[open] summary{margin-bottom:12px}
         <label>Seed keywords <span class="hint">One per line</span>
           <textarea id="kw-seed" rows="3">silk saree
 banarasi saree</textarea></label>
-        <label>Cities <span class="hint">Comma separated</span>
+        <label>Business type
+          <select id="kw-type"><option value="products">Products or shop</option><option value="services">Services</option><option value="tool">Online tool or software</option></select></label>
+        <label>Cities <span class="hint">Comma separated. Leave empty for sites that serve everyone online</span>
           <input id="kw-city" value="Surat, Ahmedabad, Mumbai"></label>
         <div class="toggles">
           <label><input type="checkbox" id="kw-g-local" checked> Local</label>
@@ -710,18 +713,132 @@ function renderPsi(p){
   if(p.opportunities.length) h+=`<div class="minihead">Biggest speed fixes</div><ol class="opps">${p.opportunities.map(o=>`<li>${esc(o.title)}${o.savings?` <span>${esc(o.savings)}</span>`:''}</li>`).join('')}</ol>`;
   $('au-psi').innerHTML=h;
 }
+/* ---------- fill every tab from the audited site ---------- */
+const STOP=new Set('a an and the or of for to in on at by with from your you our we is are be it this that as how what why when best top free online new get use using all more most into about vs via per its it’s & - – — | : · home page official site website welcome'.split(' '));
+function jsonLdItems(d){
+  const out=[];
+  const walk=o=>{ if(!o||typeof o!=='object') return; if(Array.isArray(o)) return o.forEach(walk); if(o['@graph']) walk(o['@graph']); if(o['@type']) out.push(o); };
+  d.querySelectorAll('script[type="application/ld+json" i]').forEach(sc=>{try{walk(JSON.parse(sc.textContent))}catch(e){}});
+  return out;
+}
+const typeOf=o=>[].concat(o['@type']).map(String);
+const str=v=>v==null?'':Array.isArray(v)?str(v[0]):typeof v==='object'?(v.name||v.url||v['@id']||''):String(v).trim();
+function extractSite(url,html,robotsInfo){
+  const d=new DOMParser().parseFromString(html,'text/html');
+  let U; try{U=new URL(url)}catch(e){U=new URL('https://example.com/')}
+  const abs=h=>{try{return h?new URL(h,U).href:''}catch(e){return ''}};
+  const meta=n=>d.querySelector(`meta[name="${n}" i]`)?.getAttribute('content')?.trim()||'';
+  const prop=n=>d.querySelector(`meta[property="${n}" i]`)?.getAttribute('content')?.trim()||'';
+  const items=jsonLdItems(d);
+  const find=re=>items.find(o=>typeOf(o).some(t=>re.test(t)));
+  const biz=items.find(o=>o.address&&typeOf(o).some(t=>!/^(WebSite|WebPage|Product|Offer|Article|BlogPosting|NewsArticle|BreadcrumbList|FAQPage|Question|Answer|ImageObject|PostalAddress|Person)$/.test(t)));
+  const org=biz||find(/^(Organization|Corporation|LocalBusiness|Store|OnlineStore|NGO|EducationalOrganization)$/);
+  const prod=find(/^(Product|ProductGroup|SoftwareApplication|WebApplication)$/);
+  const art=find(/^(Article|BlogPosting|NewsArticle|TechArticle)$/);
+  const faqLd=find(/^FAQPage$/);
+  const title=d.querySelector('title')?.textContent.trim()||'';
+  const h1=d.querySelector('h1')?.textContent.replace(/\s+/g,' ').trim()||'';
+  const desc=meta('description')||prop('og:description');
+  const host=U.hostname.replace(/^www\./,'');
+  const core=host.split('.')[0];
+  const flat=x=>x.toLowerCase().replace(/[^a-z0-9]/g,'');
+  // brand name
+  let name=prop('og:site_name')||str(org?.name)||str(find(/^WebSite$/)?.name);
+  if(!name){
+    const parts=title.split(/\s+[|–—:·-]\s+/).map(x=>x.trim()).filter(Boolean);
+    name=parts.find(x=>flat(x)===flat(core)||flat(core).includes(flat(x))&&flat(x).length>3)||(parts.length>1?parts[parts.length-1]:'')||core.charAt(0).toUpperCase()+core.slice(1);
+  }
+  // contact + social profiles
+  const links=[...d.querySelectorAll('a[href]')].map(a=>a.getAttribute('href'));
+  const tel=str(org?.telephone)||(links.find(h=>/^tel:/i.test(h))||'').replace(/^tel:/i,'').trim();
+  const email=str(org?.email).replace(/^mailto:/i,'')||(links.find(h=>/^mailto:/i.test(h))||'').replace(/^mailto:/i,'').split('?')[0];
+  const socialRe=/^https?:\/\/(www\.)?(instagram\.com|facebook\.com|fb\.com|x\.com|twitter\.com|linkedin\.com|youtube\.com|pinterest\.[a-z.]+|threads\.net|tiktok\.com|github\.com)\/[^?#]+/i;
+  const sameAs=[...new Set([].concat(org?.sameAs||[]).map(String).concat(links.map(abs).filter(h=>socialRe.test(h)&&!/\/(sharer|share|intent|dialog)/i.test(h))).map(h=>h.replace(/\/$/,'')))].slice(0,8);
+  const ad=(org&&typeof org.address==='object'&&!Array.isArray(org.address))?org.address:(Array.isArray(org?.address)?org.address[0]:{});
+  const country=str(ad?.addressCountry);
+  const geo=org?.geo||{};
+  const logo=abs(str(org?.logo))||abs(d.querySelector('link[rel="apple-touch-icon" i]')?.getAttribute('href'))||abs(d.querySelector('link[rel~="icon" i]')?.getAttribute('href'));
+  const image=abs(prop('og:image'))||abs(str(org?.image))||logo;
+  const hours=[].concat(org?.openingHours||[]).join(', ');
+  // FAQ: from schema, else headings that are questions
+  let faq=[];
+  if(faqLd) faq=[].concat(faqLd.mainEntity||[]).map(q=>[str(q.name),str(q.acceptedAnswer?.text)]);
+  if(!faq.length){
+    d.querySelectorAll('h2,h3,h4,summary,dt,button').forEach(el=>{
+      const q=el.textContent.replace(/\s+/g,' ').trim(); if(!/\?$/.test(q)||q.length>160||faq.length>=8) return;
+      let a='';
+      if(el.tagName==='SUMMARY') a=[...el.parentElement.childNodes].filter(n=>n!==el).map(n=>n.textContent).join(' ');
+      else { let n=el.nextElementSibling; while(n&&!a&&!/^H[1-6]$/.test(n.tagName)){a=n.textContent; n=n.nextElementSibling;} }
+      a=a.replace(/\s+/g,' ').trim(); if(a) faq.push([q,a]);
+    });
+  }
+  faq=faq.filter(([q,a])=>q&&a).map(([q,a])=>q.replace(/\|/g,'/')+' | '+a.replace(/<[^>]+>/g,'').replace(/\|/g,'/').slice(0,300));
+  // keyword seeds: frequent 2–3 word phrases from title, headings and description
+  const brandFlat=[flat(name),flat(core)].filter(x=>x.length>3);
+  const isBrand=k=>{const f=flat(k); return brandFlat.some(b=>b.includes(f)||f.includes(b));};
+  const sources=[[title,3],[h1,3],[[...d.querySelectorAll('h2')].map(x=>x.textContent).join(' . '),2],[[...d.querySelectorAll('h3')].map(x=>x.textContent).join(' . '),1],[desc,1],[meta('keywords').replace(/,/g,' . '),2]];
+  const score=new Map();
+  sources.forEach(([txt,w])=>{
+    (txt||'').toLowerCase().split(/[.,;:!?|()\[\]"“”–—\/&+]+|\s-\s/).forEach(chunk=>{
+      const words=chunk.split(/\s+/).map(x=>x.replace(/^[^a-z0-9ऀ-࿿]+|[^a-z0-9ऀ-࿿+#]+$/g,'')).filter(Boolean);
+      for(let n=2;n<=3;n++) for(let i=0;i+n<=words.length;i++){
+        const g=words.slice(i,i+n);
+        if(g.some(x=>STOP.has(x)||/^\d+$/.test(x))) continue;
+        const k=g.join(' '); if(isBrand(k)) continue; score.set(k,(score.get(k)||0)+w*(n===2?1:1.2));
+      }
+    });
+  });
+  const seeds=[];
+  [...score.entries()].sort((a,b)=>b[1]-a[1]).forEach(([k])=>{ if(seeds.length<3&&!seeds.some(x=>x.includes(k)||k.includes(x))) seeds.push(k); });
+  if(!seeds.length){ const w=(title+' '+h1).toLowerCase().split(/\W+/).filter(x=>x.length>3&&!STOP.has(x)&&!isBrand(x)); seeds.push(...[...new Set(w)].slice(0,3)); }
+  // what kind of site is it
+  const toolRe=/\b(tool|tools|checker|lookup|look up|finder|generator|calculator|converter|tester|analy[sz]er|validator|online|app|software|api)\b/i;
+  const kwType=prod&&typeOf(prod).some(t=>/Software|WebApplication/.test(t))||toolRe.test(title+' '+h1)?'tool':(prod||prop('og:type')==='product'||/shop|store|buy|price|wholesale|manufactur/i.test(title+' '+desc))?'products':'services';
+  // schema type to show first
+  const scType=biz&&ad?.streetAddress?'LocalBusiness':prod&&typeOf(prod).includes('Product')||prop('og:type')==='product'?'Product':art||prop('og:type')==='article'?'Article':(faq.length&&U.pathname!=='/')?'FAQPage':'Organization';
+  const pr=prod?.offers?(Array.isArray(prod.offers)?prod.offers[0]:prod.offers):{};
+  const rating=prod?.aggregateRating||{};
+  const sc={
+    LocalBusiness:{name,url:U.origin,telephone:tel,image,street:str(ad?.streetAddress),city:str(ad?.addressLocality),region:str(ad?.addressRegion),postal:str(ad?.postalCode),country,hours,priceRange:str(org?.priceRange),lat:str(geo.latitude),lng:str(geo.longitude),sameAs:sameAs.join('\n')},
+    Organization:{name,url:U.origin,logo,telephone:tel,email,sameAs:sameAs.join('\n')},
+    Product:{name:str(prod?.name)||h1||title,image:abs(str(prod?.image))||image,description:str(prod?.description)||desc,brand:str(prod?.brand)||name,sku:str(prod?.sku),
+      price:str(pr.price)||prop('product:price:amount'),currency:str(pr.priceCurrency)||prop('product:price:currency')||'INR',availability:str(pr.availability).replace(/^https?:\/\/schema\.org\//,''),rating:str(rating.ratingValue),reviews:str(rating.reviewCount||rating.ratingCount)},
+    FAQPage:{faq:faq.join('\n')},
+    Article:{headline:str(art?.headline)||h1||title,image:abs(str(art?.image))||image,author:str(art?.author)||meta('author'),date:(str(art?.datePublished)||prop('article:published_time')).slice(0,10),publisher:name,plogo:logo}
+  };
+  // site pages for the sitemap tab
+  const internal=[...new Set(links.map(abs).filter(h=>{try{const x=new URL(h);return x.hostname.replace(/^www\./,'')===host&&!/\.(jpg|jpeg|png|gif|webp|svg|pdf|zip|css|js)$/i.test(x.pathname)}catch(e){return false}}).map(h=>new URL(h).pathname))];
+  return {host,origin:U.origin,url:U.href,title,desc,name,image,city:str(ad?.addressLocality),country:country.length===2?({IN:'India',US:'USA',GB:'UK',AE:'UAE',CA:'Canada',AU:'Australia'}[country.toUpperCase()]||country):country,
+    seeds,kwType,scType,sc,paths:internal.length?['/',...internal.filter(x=>x!=='/')].slice(0,30):['/'],canonical:d.querySelector('link[rel="canonical" i]')?.getAttribute('href')};
+}
+function markSource(host){ document.querySelectorAll('.ex').forEach(b=>{b.textContent='from '+host; b.classList.add('src');}); }
+let site=null;
 function prefill(url,html){
   try{
-    const d=new DOMParser().parseFromString(html,'text/html');
-    const set=(id,v)=>{if(v) $(id).value=v};
-    set('mt-title',d.querySelector('title')?.textContent.trim());
-    set('mt-desc',d.querySelector('meta[name="description" i]')?.getAttribute('content'));
-    set('mt-url',d.querySelector('link[rel="canonical" i]')?.getAttribute('href')||url);
-    set('mt-site',d.querySelector('meta[property="og:site_name" i]')?.getAttribute('content'));
-    set('mt-img',d.querySelector('meta[property="og:image" i]')?.getAttribute('content'));
-    $('rb-domain').value=new URL(url).origin;
-    meta(); robots();
-  }catch(e){}
+    site=extractSite(url,html);
+    const set=(id,v)=>{$(id).value=v||''};
+    // Meta & SERP
+    set('mt-title',site.title); set('mt-desc',site.desc); set('mt-url',site.canonical?new URL(site.canonical,site.url).href:site.url);
+    set('mt-site',site.name); set('mt-img',site.image); meta();
+    // Schema
+    scData=site.sc; $('sc-type').value=site.scType; scFields();
+    // Social pack
+    soOff=new Set();
+    set('so-brand',site.name); set('so-niche',site.seeds.join(', ')); set('so-city',site.city); set('so-country',site.country);
+    const offer=(site.desc.split(/(?<=[.!?])\s/)[0]||'').replace(/\.$/,'');
+    set('so-offer',offer.length>80?offer.slice(0,77).replace(/\s+\S*$/,'')+'…':offer); set('so-cta','Visit '+site.host); social();
+    // Keywords
+    set('kw-seed',site.seeds.join('\n')); $('kw-type').value=site.kwType; set('kw-city',site.city); keywords();
+    // Robots & sitemap (refined when robots.txt and the sitemap load)
+    set('rb-domain',site.origin); set('rb-paths',site.paths.join('\n')); set('rb-block',''); robots();
+    markSource(site.host);
+  }catch(e){ console.error(e); }
+}
+function prefillRobots(r){
+  if(!site) return;
+  if(r.paths&&r.paths.length) $('rb-paths').value=r.paths.join('\n');
+  $('rb-block').value=(r.disallow||[]).join('\n');
+  robots();
 }
 
 let busy=false;
@@ -743,7 +860,7 @@ $('au-form').addEventListener('submit',async e=>{
     try{ history.replaceState(null,'','?url='+encodeURIComponent(f.finalUrl)); }catch(e){}
     setStatus('<span class="spin"></span> Page checked. Loading robots.txt, sitemap and PageSpeed…');
     $('au-psi').innerHTML='<p class="note"><span class="spin"></span> Running Google PageSpeed. This takes 20–60 seconds.</p>';
-    const rp=api('/api/robots?url='+encodeURIComponent(f.finalUrl)).then(r=>{ server=server.concat(robotsChecks(r,f.finalUrl)); $('au-server').innerHTML=rows([...server]); paintScore(); })
+    const rp=api('/api/robots?url='+encodeURIComponent(f.finalUrl)).then(r=>{ prefillRobots(r); server=server.concat(robotsChecks(r,f.finalUrl)); $('au-server').innerHTML=rows([...server]); paintScore(); })
       .catch(err=>{ server.push({status:'info',label:'robots.txt & sitemap',detail:err.message}); $('au-server').innerHTML=rows([...server]); });
     const pp=api(`/api/pagespeed?url=${encodeURIComponent(f.finalUrl)}&strategy=${$('au-strategy').value}`).then(renderPsi)
       .catch(err=>{ $('au-psi').innerHTML=`<p class="note status err">${esc(err.message)}</p>`; });
@@ -759,6 +876,7 @@ $('au-run').addEventListener('click',()=>{
   setStatus(''); server=[]; $('au-server').innerHTML='<li><span class="st info">Info</span><div><b>Server checks need a URL</b><div class="d">Pasted HTML only gets on-page checks.</div></div></li>';
   $('au-psi').innerHTML='<p class="note">PageSpeed needs a live URL.</p>';
   $('au-sub').textContent='SEO score for pasted HTML'; renderOnpage(html,{});
+  try{ const d=new DOMParser().parseFromString(html,'text/html'); const u=d.querySelector('link[rel="canonical" i]')?.getAttribute('href')||d.querySelector('meta[property="og:url" i]')?.getAttribute('content'); if(u) prefill(new URL(u).href,html); }catch(e){}
 });
 $('au-sample').addEventListener('click',()=>{$('au-html').value=SAMPLE;});
 // start: audit ?url= if present, otherwise show sample results
@@ -818,9 +936,10 @@ const SC={
   FAQPage:[['faq','Questions and answers','Do you sell wholesale? | Yes. Dealers get factory rates on orders of 10 sarees or more.\nDo you ship outside Gujarat? | We ship across India in 3–6 working days.','One per line: question | answer','ta']],
   Article:[['headline','Headline','How to Spot a Pure Silk Saree'],['image','Image URL','https://shreetextiles.in/blog/pure-silk.jpg'],['author','Author name','Meera Patel'],['date','Date published','2026-10-01','YYYY-MM-DD'],['publisher','Publisher','Shree Textiles'],['plogo','Publisher logo URL','https://shreetextiles.in/logo.png']]
 };
+let scData=null; // filled from an audited site; null = show examples
 function scFields(){
   const t=$('sc-type').value;
-  $('sc-fields').innerHTML=SC[t].map(([k,l,v,hint,kind])=>`<label>${esc(l)}${hint?` <span class="hint">${esc(hint)}</span>`:''}${kind==='ta'?`<textarea id="sc-${t}-${k}" rows="4">${esc(v)}</textarea>`:`<input id="sc-${t}-${k}" value="${esc(v)}">`}</label>`).join('');
+  $('sc-fields').innerHTML=SC[t].map(([k,l,v0,hint,kind])=>{const v=scData?(scData[t]?.[k]??''):v0; return `<label>${esc(l)}${hint?` <span class="hint">${esc(hint)}</span>`:''}${kind==='ta'?`<textarea id="sc-${t}-${k}" rows="4">${esc(v)}</textarea>`:`<input id="sc-${t}-${k}" value="${esc(v)}">`}</label>`;}).join('');
   $('sc-fields').querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',scOut));
   scOut();
 }
@@ -868,11 +987,12 @@ function social(){
   const main=words.slice(-1)[0]||'';
   const groups=[
     ['Niche',"what people search for",uniq(niche.map(slug))],
-    ['Local',"where you are",uniq([...niche.slice(0,3).map(n=>slug(n)+cs), cs&&main?cs+main:'', ct&&niche[0]?slug(niche[0])+ct:'', cs?cs+'shopping':''])],
+    ['Local',"where you are",uniq(cs?[...niche.slice(0,3).map(n=>slug(n)+cs), main?cs+main:'', ct&&niche[0]?slug(niche[0])+ct:'', cs+'shopping']:(ct&&niche[0]?[slug(niche[0])+ct]:[]))],
     ['Branded',"yours only",uniq([slug(brand), slug(brand)+cs])],
     ['Community',"broader audience",uniq(words.slice(0,2).flatMap(w=>[w+'lovers',w+'collection'])).concat(ct?['madein'+ct]:[])]
   ];
-  $('so-groups').innerHTML=groups.map(([g,hint,tags])=>`<div class="grp"><h4>${g} <span>${hint}</span></h4><div class="chips">${tags.map(t=>`<button type="button" class="chip${soOff.has(t)?'':' on'}" data-tag="${esc(t)}">#${esc(t)}</button>`).join('')}</div></div>`).join('');
+  const seenTag=new Set(); groups.forEach(g=>{g[2]=g[2].filter(t=>!seenTag.has(t)&&seenTag.add(t));});
+  $('so-groups').innerHTML=groups.filter(g=>g[2].length).map(([g,hint,tags])=>`<div class="grp"><h4>${g} <span>${hint}</span></h4><div class="chips">${tags.map(t=>`<button type="button" class="chip${soOff.has(t)?'':' on'}" data-tag="${esc(t)}">#${esc(t)}</button>`).join('')}</div></div>`).join('');
   // pick balanced order: niche, local, branded, niche, local, community...
   const pools=groups.map(g=>g[2].filter(t=>!soOff.has(t)));
   const pick=[]; let i=0;
@@ -898,19 +1018,31 @@ function keywords(){
   const cities=$('kw-city').value.split(',').map(s=>s.trim()).filter(Boolean);
   const on=id=>$(id).checked; const rows=[]; const seen=new Set();
   const add=(k,i)=>{k=k.replace(/\s+/g,' ').trim(); if(!seen.has(k)){seen.add(k);rows.push([k,i]);}};
-  const plural=s=>s.endsWith('s')?s:s+'s';
+  const type=$('kw-type').value, L=c=>c.toLowerCase();
+  const T={
+    products:{local:[s=>s+' near me',s=>s+' shop near me'],city:[(s,c)=>s+' in '+c,(s,c)=>s+' shop in '+c,(s,c)=>c+' '+s+' manufacturer'],
+      com:['best X','latest X','top X','X designs','X brands'],tx:['buy X online','X price','X wholesale','X manufacturer','X online shopping'],
+      info:['what is X','how to choose X','how to identify original X','which X is best','how to care for X']},
+    services:{local:[s=>s+' near me',s=>s+' services near me'],city:[(s,c)=>s+' in '+c,(s,c)=>s+' services in '+c,(s,c)=>'best '+s+' in '+c],
+      com:['best X','top X company','X reviews','affordable X','X packages'],tx:['X price','X cost','hire X','X quote','book X'],
+      info:['what is X','how much does X cost','how to choose X','X benefits','X checklist']},
+    tool:{local:[],city:[(s,c)=>s+' '+c],
+      com:['best X','free X','X online','X alternatives','X app'],tx:['free X online','X tool','X api','X software','X pricing'],
+      info:['what is X','how to use X','how does X work','is X accurate','X explained']}
+  }[type];
+  const fill=(tpl,s)=>tpl.replace('X',s);
   seeds.forEach(s=>{
-    if(on('kw-g-local')){ add(s+' near me','Local'); add(plural(s)+' shop near me','Local'); cities.forEach(c=>{add(s+' in '+c.toLowerCase(),'Local'); add(s+' shop in '+c.toLowerCase(),'Local'); add(c.toLowerCase()+' '+s+' manufacturer','Local');}); }
-    if(on('kw-g-com')){ ['best','latest','designer','pure','top'].forEach(m=>add(m+' '+s,'Commercial')); add(s+' designs','Commercial'); add(s+' for wedding','Commercial'); add(s+' vs '+(s.includes('silk')?'cotton saree':'silk saree'),'Commercial'); }
-    if(on('kw-g-tx')){ add('buy '+s+' online','Transactional'); add(s+' price','Transactional'); add(s+' wholesale','Transactional'); add(s+' manufacturer','Transactional'); add(s+' under 5000','Transactional'); add(s+' online shopping','Transactional'); }
-    if(on('kw-g-info')){ add('how to identify original '+s,'Informational'); add('how to wash '+s,'Informational'); add('what is '+s,'Informational'); add('which '+s+' is best','Informational'); add('how to drape '+s,'Informational'); }
+    if(on('kw-g-local')){ T.local.forEach(f=>add(f(s),'Local')); cities.forEach(c=>T.city.forEach(f=>add(f(s,L(c)),'Local'))); }
+    if(on('kw-g-com')) T.com.forEach(t=>add(fill(t,s),'Commercial'));
+    if(on('kw-g-tx')) T.tx.forEach(t=>add(fill(t,s),'Transactional'));
+    if(on('kw-g-info')) T.info.forEach(t=>add(fill(t,s),'Informational'));
   });
   $('kw-body').innerHTML=rows.length?rows.map(([k,i])=>`<tr><td class="k">${esc(k)}</td><td><span class="intent i-${i}">${i}</span></td></tr>`).join(''):'<tr><td colspan="2">Add a seed keyword to see ideas.</td></tr>';
   $('kw-plain').textContent=rows.map(r=>r[0]).join('\n');
   const n={}; rows.forEach(r=>n[r[1]]=(n[r[1]]||0)+1);
   $('kw-tally').innerHTML=`<span class="pill pass">${rows.length} ideas</span>`+Object.entries(n).map(([k,c])=>`<span class="intent i-${k}">${c} ${k.toLowerCase()}</span>`).join('');
 }
-['kw-seed','kw-city','kw-g-local','kw-g-com','kw-g-tx','kw-g-info'].forEach(id=>$(id).addEventListener('input',keywords));
+['kw-seed','kw-type','kw-city','kw-g-local','kw-g-com','kw-g-tx','kw-g-info'].forEach(id=>$(id).addEventListener('input',keywords));
 keywords();
 
 /* ---------- ROBOTS ---------- */
