@@ -25,7 +25,11 @@ const siteUrl = req => SITE_URL_ENV || `${req.protocol}://${req.get('host')}`;
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'hello@example.com';
 const ADS_CLIENT = (process.env.ADSENSE_CLIENT ?? 'ca-pub-8829216905817441').trim(); // set ADSENSE_CLIENT= (empty) to turn ads off          // ca-pub-XXXXXXXXXXXXXXXX
 const ADS_PREVIEW = process.env.ADS_PREVIEW === '1';                    // show empty ad boxes for layout testing
-const ADS_SLOTS = { top: process.env.ADSENSE_SLOT_TOP, side: process.env.ADSENSE_SLOT_SIDE, bottom: process.env.ADSENSE_SLOT_BOTTOM };
+const ADS_SLOTS = {
+  top: process.env.ADSENSE_SLOT_TOP ?? '3229197866',       // rankdesk-top
+  side: process.env.ADSENSE_SLOT_SIDE ?? '8731886116',     // rankdesk-side
+  bottom: process.env.ADSENSE_SLOT_BOTTOM ?? '1851792151', // rankdesk-bottom
+};
 if (ADS_CLIENT && !/^ca-pub-\d{10,20}$/.test(ADS_CLIENT)) console.warn('ADSENSE_CLIENT should look like ca-pub-1234567890123456');
 
 const attr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
