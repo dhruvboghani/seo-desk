@@ -19,7 +19,9 @@ app.set('trust proxy', 1);
 /* ---------- site + Google AdSense settings ---------- */
 const fs = require('fs');
 const SITE_NAME = process.env.SITE_NAME || 'Rankdesk';
-const SITE_URL = (process.env.SITE_URL || `http://localhost:${PORT}`).replace(/\/+$/, '');
+const SITE_URL_ENV = (process.env.SITE_URL || '').replace(/\/+$/, '');
+// Without SITE_URL, use the address the visitor actually opened (works on Vercel, Render, etc.)
+const siteUrl = req => SITE_URL_ENV || `${req.protocol}://${req.get('host')}`;
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'hello@example.com';
 const ADS_CLIENT = (process.env.ADSENSE_CLIENT ?? 'ca-pub-8829216905817441').trim(); // set ADSENSE_CLIENT= (empty) to turn ads off          // ca-pub-XXXXXXXXXXXXXXXX
 const ADS_PREVIEW = process.env.ADS_PREVIEW === '1';                    // show empty ad boxes for layout testing
@@ -44,17 +46,17 @@ function adSlot(name) {
   return '';
 }
 const pages = {};
-function render(file) {
+function render(file, req) {
   if (!pages[file] || process.env.NODE_ENV !== 'production') pages[file] = fs.readFileSync(path.join(__dirname, 'public', file), 'utf8');
   return pages[file]
     .replace('<!--ADS_HEAD-->', adHead())
     .replace(/<!--AD:(\w+)-->/g, (_, n) => adSlot(n))
     .replace(/\{\{SITE_NAME\}\}/g, attr(SITE_NAME))
-    .replace(/\{\{SITE_URL\}\}/g, attr(SITE_URL))
+    .replace(/\{\{SITE_URL\}\}/g, attr(siteUrl(req)))
     .replace(/\{\{CONTACT_EMAIL\}\}/g, attr(CONTACT_EMAIL))
     .replace(/\{\{YEAR\}\}/g, new Date().getFullYear());
 }
-const sendPage = file => (req, res) => res.type('html').send(render(file));
+const sendPage = file => (req, res) => res.type('html').send(render(file, req));
 app.get(['/', '/index.html'], sendPage('index.html'));
 app.get('/about', sendPage('about.html'));
 app.get('/privacy', sendPage('privacy.html'));
@@ -66,10 +68,11 @@ app.get('/ads.txt', (req, res) => {
   res.type('text').send(`google.com, ${ADS_CLIENT.replace(/^ca-/, '')}, DIRECT, f08c47fec0942fa0\n`);
 });
 // Rankdesk's own robots.txt and sitemap
-app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nDisallow: /api/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`));
+app.get('/robots.txt', (req, res) => res.type('text').send(`User-agent: *\nDisallow: /api/\n\nSitemap: ${siteUrl(req)}/sitemap.xml\n`));
 app.get('/sitemap.xml', (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
-  const urls = ['/', '/about', '/privacy'].map(p => `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n');
+  const base = siteUrl(req);
+  const urls = ['/', '/about', '/privacy'].map(p => `  <url><loc>${base}${p}</loc><lastmod>${today}</lastmod></url>`).join('\n');
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
 });
 
