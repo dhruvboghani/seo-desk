@@ -1,0 +1,91 @@
+<!--@meta {
+  "title": "Free Instagram Hashtag & Bio Generator | Rankdesk",
+  "description": "Generate niche, local and branded Instagram hashtags, a searchable Instagram name and bio, and YouTube tags for your business. Free, no signup.",
+  "path": "/hashtag-generator",
+  "nav": "social",
+  "name": "Hashtag generator",
+  "app": "Rankdesk Hashtag Generator",
+  "scripts": [
+    "social.js"
+  ],
+  "faq": [
+    [
+      "How many hashtags should I use on Instagram?",
+      "Instagram has been lowering the number of hashtags it allows and recommends a handful of relevant ones rather than 30 generic ones. Three to five specific hashtags usually work better than a long list. Check Instagram's current limit before posting."
+    ],
+    [
+      "Does the Instagram name field help people find me?",
+      "Yes. Instagram search looks at both your username and the Name field on your profile. Putting your main keyword and city in the Name field, such as Shree Textiles | Silk Sarees Surat, helps people who search for those words."
+    ],
+    [
+      "Are local hashtags worth using?",
+      "For a business that serves one city, yes. Local hashtags reach people nearby who are more likely to visit or order. Pair them with a location tag on each post."
+    ],
+    [
+      "What are YouTube tags for?",
+      "Tags matter much less than your title, description and thumbnail, but they help YouTube understand common misspellings and related phrases. The 500-character limit counts the commas between tags."
+    ]
+  ]
+}-->
+<main id="main">
+  <section class="tool-hero wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Hashtag generator</span></nav>
+    <div class="load-in">
+      <h1 class="h1">Hashtags and a bio people <span class="hl">actually search.</span></h1>
+      <p class="lede">Get a balanced set of niche, local and branded hashtags, a searchable Instagram name and bio, and YouTube tags. Tap a hashtag to leave it out.</p>
+      <!--@srcbar-->
+    </div>
+  </section>
+  <div class="wrap">
+    <!--AD:top-->
+    <div class="desk">
+      <div class="desk-main">
+        <div class="cols">
+          <div class="panel stack">
+            <div class="panel-h" style="margin-bottom:0"><h2>Your brand</h2></div>
+            <label class="field">Brand name <input id="so-brand"></label>
+            <label class="field">What you offer <span class="hint">Keywords, comma separated, most important first</span><input id="so-niche"></label>
+            <div class="row2">
+              <label class="field">City <span class="hint">Leave empty if you sell everywhere</span><input id="so-city"></label>
+              <label class="field">Country <input id="so-country"></label>
+            </div>
+            <label class="field">One-line offer for the bio <input id="so-offer"></label>
+            <label class="field">Call to action <input id="so-cta"></label>
+            <label class="field">Hashtags per post <select id="so-n"><option>3</option><option selected>5</option><option>10</option><option>15</option></select></label>
+          </div>
+          <div class="panel">
+            <div class="panel-h"><h2>Instagram profile</h2><span class="count" id="so-bio-c"></span></div>
+            <div class="phone">
+              <div class="ph-top"><div class="av"><span id="so-av">S</span></div><div class="stats"><div><b>–</b>posts</div><div><b>–</b>followers</div><div><b>–</b>following</div></div></div>
+              <div class="nm" id="so-name-prev"></div>
+              <div class="bio" id="so-bio-prev"></div>
+            </div>
+            <div class="stack" style="margin-top:16px">
+              <div><div class="meter-l"><span>Name field</span><span class="count" id="so-name-c"></span></div><div class="out light"><button class="chip-btn" data-copy="so-name" type="button">Copy</button><pre id="so-name" class="wrap-text" style="padding-right:80px"></pre></div></div>
+              <div><div class="meter-l"><span>Bio</span></div><div class="out light"><button class="chip-btn" data-copy="so-bio" type="button">Copy</button><pre id="so-bio" class="wrap-text" style="padding-right:80px"></pre></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h2>Hashtags</h2><span class="count">Tap to include or leave out</span></div>
+          <div id="so-groups" class="stack"></div>
+          <div class="out" style="margin-top:16px"><button class="chip-btn" data-copy="so-tags" type="button">Copy</button><pre id="so-tags" class="wrap-text" style="padding-right:90px"></pre></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h2>YouTube tags</h2><span class="count" id="so-yt-c"></span></div>
+          <div class="out"><button class="chip-btn" data-copy="so-yt" type="button">Copy</button><pre id="so-yt" class="wrap-text" style="padding-right:90px"></pre></div>
+        </div>
+      </div>
+      <!--@aside-->
+    </div>
+    <div class="prose-grid">
+      <div class="prose-card reveal"><h3>Mix your hashtags</h3><p>Niche tags reach people interested in what you sell. Local tags reach people nearby. Your branded tag collects customer posts in one place. Use some of each.</p></div>
+      <div class="prose-card reveal" style="--d:1"><h3>Write for search</h3><p>Instagram reads the first line of a caption and the words spoken or shown in Reels. Use the same keywords there, written naturally.</p></div>
+      <div class="prose-card reveal" style="--d:2"><h3>Rotate sets</h3><p>Posting the same hashtags on every post can look like spam. Keep three or four sets and rotate them depending on the post.</p></div>
+    </div>
+    <section class="faq-wrap" style="margin-bottom:clamp(56px,7vw,96px)">
+      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About hashtags</h2></div>
+      <div class="reveal" style="--d:1"><!--@faq--></div>
+    </section>
+  </div>
+</main>

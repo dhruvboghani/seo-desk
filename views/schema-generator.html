@@ -1,0 +1,76 @@
+<!--@meta {
+  "title": "Free Schema Markup Generator (JSON-LD) | Rankdesk",
+  "description": "Create JSON-LD schema for a local business, organization, product, FAQ or article, filled in from your own website. Free schema markup generator.",
+  "path": "/schema-generator",
+  "nav": "schema",
+  "name": "Schema generator",
+  "app": "Rankdesk Schema Generator",
+  "scripts": [
+    "schema.js"
+  ],
+  "faq": [
+    [
+      "What is schema markup?",
+      "Schema markup is a small block of code that tells search engines exactly what a page is about: a business with an address and opening hours, a product with a price, or a list of questions and answers. Google uses it to show rich results such as star ratings and FAQs."
+    ],
+    [
+      "Which schema type should I use?",
+      "Use Local business on the home or contact page of a shop, office or factory with a real address. Use Organization for online businesses. Use Product on product pages, FAQ page on pages with questions and answers, and Article on blog posts."
+    ],
+    [
+      "Where do I paste the JSON-LD?",
+      "Paste the whole script block inside the head or body of the page it describes. Each page should only describe itself, so put Product schema on that product's page, not on every page."
+    ],
+    [
+      "Can I add ratings without real reviews?",
+      "No. Google's rules only allow ratings that come from real customer reviews shown on your site. Leave the rating fields empty if you don't have them, or Google may ignore your schema or penalise the page."
+    ]
+  ]
+}-->
+<main id="main">
+  <section class="tool-hero wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Schema generator</span></nav>
+    <div class="load-in">
+      <h1 class="h1">Schema markup, <span class="hl">without the code.</span></h1>
+      <p class="lede">Pick what the page is about, check the details, and copy JSON-LD that helps Google show ratings, FAQs and business details in search.</p>
+      <!--@srcbar-->
+    </div>
+  </section>
+  <div class="wrap">
+    <!--AD:top-->
+    <div class="desk">
+      <div class="desk-main">
+        <div class="panel">
+          <div class="panel-h"><h2>What is this page about?</h2></div>
+          <div class="types" role="radiogroup" aria-label="Schema type" id="sc-types">
+            <button type="button" role="radio" data-t="LocalBusiness" aria-checked="true"><b>Local business</b><span>Shop, office, factory</span></button>
+            <button type="button" role="radio" data-t="Organization" aria-checked="false"><b>Organization</b><span>Company or online brand</span></button>
+            <button type="button" role="radio" data-t="Product" aria-checked="false"><b>Product</b><span>One item with a price</span></button>
+            <button type="button" role="radio" data-t="FAQPage" aria-checked="false"><b>FAQ page</b><span>Questions and answers</span></button>
+            <button type="button" role="radio" data-t="Article" aria-checked="false"><b>Article</b><span>Blog post or news</span></button>
+          </div>
+        </div>
+        <div class="cols">
+          <div class="panel">
+            <div class="panel-h"><h2>Details</h2><span class="count" id="sc-filled"></span></div>
+            <div class="stack" id="sc-fields"></div>
+          </div>
+          <div class="panel" style="position:sticky;top:88px">
+            <div class="panel-h"><h2>JSON-LD</h2><a class="linkbtn" href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">Test in Google ↗</a></div>
+            <div class="out"><button class="chip-btn" data-copy="sc-out" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 10.5V4a1.5 1.5 0 0 1 1.5-1.5H11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copy</button><pre id="sc-out"></pre></div>
+          </div>
+        </div>
+      </div>
+      <!--@aside-->
+    </div>
+    <div class="prose-grid">
+      <div class="prose-card reveal"><h3>Local business owners</h3><p>Use the exact name, address and phone that appear on your Google Business Profile. Matching details help Google connect your website to your Maps listing.</p></div>
+      <div class="prose-card reveal" style="--d:1"><h3>Shops</h3><p>Add Product schema to each product page with its real price and stock status. Update it when the price changes, or Google may stop showing it.</p></div>
+      <div class="prose-card reveal" style="--d:2"><h3>After you publish</h3><p>Test the page in Google's Rich Results Test, then watch the Enhancements section of Search Console for errors over the next few weeks.</p></div>
+    </div>
+    <section class="faq-wrap" style="margin-bottom:clamp(56px,7vw,96px)">
+      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About schema</h2></div>
+      <div class="reveal" style="--d:1"><!--@faq--></div>
+    </section>
+  </div>
+</main>

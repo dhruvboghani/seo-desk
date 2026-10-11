@@ -1,0 +1,78 @@
+<!--@meta {
+  "title": "Free Keyword Ideas Generator: Local, Buying & Questions",
+  "description": "Turn one seed keyword into local, commercial, buying and question searches for products, services or online tools. Free keyword idea generator, no signup.",
+  "path": "/keyword-ideas",
+  "nav": "keywords",
+  "name": "Keyword ideas",
+  "app": "Rankdesk Keyword Ideas Generator",
+  "scripts": [
+    "keywords.js"
+  ],
+  "faq": [
+    [
+      "Does this show search volume?",
+      "No. Search volume comes from Google's data, which needs a Google Ads account or a paid tool. Use these ideas as a shortlist, then check volume for the ones you like in Google Keyword Planner or compare them in Google Trends."
+    ],
+    [
+      "What do the intent labels mean?",
+      "Local searches include a place or 'near me'. Commercial searches compare options, like 'best' or 'reviews'. Transactional searches are ready to buy or book. Informational searches ask a question. Each kind needs a different type of page."
+    ],
+    [
+      "Which keywords should a new website target first?",
+      "Longer, specific phrases with a clear intent, such as a product plus a city, or a question your customers ask. They have fewer competing pages, and the people searching them know what they want."
+    ],
+    [
+      "Can I use Hindi or Gujarati keywords?",
+      "Yes. Type seed keywords in any language or in Hinglish, the way your customers type them. Google treats them as separate searches, and they often have less competition than the English versions."
+    ]
+  ]
+}-->
+<main id="main">
+  <section class="tool-hero wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Keyword ideas</span></nav>
+    <div class="load-in">
+      <h1 class="h1">Keyword ideas people <span class="hl">really type.</span></h1>
+      <p class="lede">Start with one or two seed keywords. Get the local, comparison, buying and question versions that real customers search for.</p>
+      <!--@srcbar-->
+    </div>
+  </section>
+  <div class="wrap">
+    <!--AD:top-->
+    <div class="desk">
+      <div class="desk-main">
+        <div class="cols">
+          <div class="panel stack">
+            <div class="panel-h" style="margin-bottom:0"><h2>Seeds</h2></div>
+            <label class="field">Seed keywords <span class="hint">One per line, the way a customer would say it</span><textarea id="kw-seed" rows="3"></textarea></label>
+            <label class="field">Business type
+              <select id="kw-type"><option value="products">Products or shop</option><option value="services">Services</option><option value="tool">Online tool or software</option></select></label>
+            <label class="field">Cities <span class="hint">Comma separated. Leave empty if you serve everyone online</span><input id="kw-city"></label>
+            <div class="checks-inline">
+              <label><input type="checkbox" id="kw-g-local" checked> Local</label>
+              <label><input type="checkbox" id="kw-g-com" checked> Commercial</label>
+              <label><input type="checkbox" id="kw-g-tx" checked> Transactional</label>
+              <label><input type="checkbox" id="kw-g-info" checked> Questions</label>
+            </div>
+            <div class="tally" id="kw-tally"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-h"><h2>Ideas</h2><button class="chip-btn" data-copy="kw-plain" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 10.5V4a1.5 1.5 0 0 1 1.5-1.5H11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copy list</button></div>
+            <div class="tbl"><table><thead><tr><th>Keyword</th><th>Intent</th><th><span class="sr">Check</span></th></tr></thead><tbody id="kw-body"></tbody></table></div>
+            <pre id="kw-plain" hidden></pre>
+            <p class="note" style="margin-top:14px">Click <b>Trends</b> to compare a keyword's popularity in Google Trends. For search volume, paste the list into Google Keyword Planner.</p>
+          </div>
+        </div>
+      </div>
+      <!--@aside-->
+    </div>
+    <div class="prose-grid">
+      <div class="prose-card reveal"><h3>One page per intent</h3><p>"Silk saree price" and "how to identify pure silk" need different pages. Buying searches want a product page. Questions want a guide.</p></div>
+      <div class="prose-card reveal" style="--d:1"><h3>Start long and local</h3><p>New sites rarely rank for short, broad words. A product plus a city, or a specific question, is where you can win first.</p></div>
+      <div class="prose-card reveal" style="--d:2"><h3>Use the words in the right places</h3><p>Put the main phrase in the title tag, the H1 and the first paragraph, and use related phrases in your H2 headings.</p></div>
+    </div>
+    <section class="faq-wrap" style="margin-bottom:clamp(56px,7vw,96px)">
+      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About keyword research</h2></div>
+      <div class="reveal" style="--d:1"><!--@faq--></div>
+    </section>
+  </div>
+</main>

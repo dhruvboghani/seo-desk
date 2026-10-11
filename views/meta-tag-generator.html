@@ -1,0 +1,97 @@
+<!--@meta {
+  "title": "Free Meta Tag Generator with Google Preview | Rankdesk",
+  "description": "Write title, description, canonical, Open Graph and Twitter tags with a live Google preview and pixel-width checks. Free meta tag generator, no signup.",
+  "path": "/meta-tag-generator",
+  "nav": "meta",
+  "name": "Meta tag generator",
+  "app": "Rankdesk Meta Tag Generator",
+  "scripts": [
+    "meta.js"
+  ],
+  "faq": [
+    [
+      "How long should a title tag be?",
+      "Google cuts titles at about 600 pixels wide, which is usually 50 to 60 characters. The preview measures the real width, because wide letters like W and M use more space than i or l."
+    ],
+    [
+      "Does the meta description help ranking?",
+      "Not directly. It is the text under your link in the results, so a clear description that matches the search gets more clicks. Google sometimes rewrites it when another sentence on the page fits the search better."
+    ],
+    [
+      "What size should the share image be?",
+      "Use 1200 by 630 pixels, under 1 MB, in JPG or PNG. WhatsApp, Facebook, LinkedIn and X all crop to roughly this shape."
+    ],
+    [
+      "Where do I paste these tags?",
+      "Inside the head section of the page, before the closing head tag. In WordPress, enter the title and description in your SEO plugin instead, such as Yoast or Rank Math."
+    ]
+  ]
+}-->
+<main id="main">
+  <section class="tool-hero wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Meta tag generator</span></nav>
+    <div class="load-in">
+      <h1 class="h1">Meta tags with a live <span class="hl">Google preview.</span></h1>
+      <p class="lede">See exactly how your page will look in search results and when shared on WhatsApp or LinkedIn, then copy the tags.</p>
+      <!--@srcbar-->
+    </div>
+  </section>
+  <div class="wrap">
+    <!--AD:top-->
+    <div class="desk">
+      <div class="desk-main">
+        <div class="cols">
+          <div class="panel stack">
+            <div class="panel-h" style="margin-bottom:0"><h2>Page details</h2></div>
+            <label class="field"><span class="top">Title tag <span class="count" id="mt-title-c"></span></span><input id="mt-title"></label>
+            <label class="field"><span class="top">Meta description <span class="count" id="mt-desc-c"></span></span><textarea id="mt-desc" rows="3"></textarea></label>
+            <label class="field">Page URL <input id="mt-url" inputmode="url"></label>
+            <div class="row2">
+              <label class="field">Site name <input id="mt-site"></label>
+              <label class="field">Page type <select id="mt-type"><option value="website">Website</option><option value="article">Article</option><option value="product">Product</option></select></label>
+            </div>
+            <label class="field">Share image URL <span class="hint">1200 × 630 px is right for WhatsApp, Facebook and LinkedIn</span><input id="mt-img" inputmode="url"></label>
+            <div class="row2">
+              <label class="field">Locale <input id="mt-locale"></label>
+              <label class="field">X (Twitter) handle <input id="mt-tw"></label>
+            </div>
+            <div class="checks-inline"><label><input type="checkbox" id="mt-noindex"> Hide this page from Google (noindex)</label></div>
+          </div>
+          <div class="stack">
+            <div class="panel">
+              <div class="panel-h"><h2>Google preview</h2>
+                <div class="seg" role="group" aria-label="Preview size"><button type="button" data-dev="desktop" aria-pressed="true">Desktop</button><button type="button" data-dev="mobile" aria-pressed="false">Mobile</button></div></div>
+              <div class="serp" id="sp">
+                <div class="site"><div class="fav" id="sp-fav">S</div><div style="min-width:0"><div class="sn" id="sp-name"></div><div class="su" id="sp-url"></div></div></div>
+                <div class="st" id="sp-title"></div>
+                <div class="sd" id="sp-desc"></div>
+              </div>
+              <div class="meters">
+                <div><div class="meter-l"><span>Title width</span><span class="count" id="sp-tw"></span></div><div class="meter"><i id="sp-tm"></i></div></div>
+                <div><div class="meter-l"><span>Description width</span><span class="count" id="sp-dw"></span></div><div class="meter"><i id="sp-dm"></i></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-h"><h2>Share preview</h2><span class="count">WhatsApp · Facebook · LinkedIn</span></div>
+              <div class="share"><div class="img" id="sh-img">No share image</div><div class="body"><div class="host" id="sh-host"></div><div class="tt" id="sh-title"></div><div class="dd" id="sh-desc"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h2>Paste inside &lt;head&gt;</h2></div>
+          <div class="out"><button class="chip-btn" data-copy="mt-out" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5" y="5" width="8.5" height="8.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 10.5V4a1.5 1.5 0 0 1 1.5-1.5H11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copy</button><pre id="mt-out"></pre></div>
+        </div>
+      </div>
+      <!--@aside-->
+    </div>
+    <div class="prose-grid">
+      <div class="prose-card reveal"><h3>Writing a title that gets clicks</h3><p>Put the main search phrase first, then what makes you different, then the brand. "Pure Silk Sarees from Surat | Shree Textiles" beats "Home | Shree Textiles".</p></div>
+      <div class="prose-card reveal" style="--d:1"><h3>A description that sells</h3><p>Answer the search in one sentence, then give a reason to click: price, delivery, free trial or location. Keep it under the green line in the width meter.</p></div>
+      <div class="prose-card reveal" style="--d:2"><h3>Check your shares</h3><p>After publishing, paste the URL into the Facebook Sharing Debugger or LinkedIn Post Inspector to refresh the preview they have saved.</p></div>
+    </div>
+    <section class="faq-wrap" style="margin-bottom:clamp(56px,7vw,96px)">
+      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About meta tags</h2></div>
+      <div class="reveal" style="--d:1"><!--@faq--></div>
+    </section>
+  </div>
+</main>

@@ -1,0 +1,216 @@
+<!--@meta {
+  "title": "Rankdesk: Free SEO Audit Tool & SEO Toolkit",
+  "description": "Audit any page free: meta tags, headings, schema, robots.txt, sitemap and PageSpeed. Then fix it with meta tag, schema, hashtag and sitemap tools.",
+  "path": "/",
+  "nav": "home",
+  "scripts": [
+    "home.js"
+  ],
+  "faq": [
+    [
+      "Is Rankdesk really free?",
+      "Yes. Every tool on Rankdesk is free to use with no signup and no limit on how many pages you audit. The site is supported by ads."
+    ],
+    [
+      "What does the SEO audit check?",
+      "The audit reads the page the way a search engine crawler does and checks 24 things: title, meta description, headings, image alt text, canonical tag, mobile viewport, indexing, Open Graph and Twitter tags, schema, HTTP status, HTTPS, redirects, server speed, compression, robots.txt, the XML sitemap and Google PageSpeed scores."
+    ],
+    [
+      "Will a 100 score make my page rank first?",
+      "No tool can promise that. The score shows whether technical problems are holding a page back. Rankings also depend on how well the content answers the search, links from other websites and, for local businesses, your Google Business Profile and reviews."
+    ],
+    [
+      "Do you store the websites I audit?",
+      "No. Rankdesk fetches the page, checks it and sends the results back to your browser. The last site you audited is remembered only in your own browser so the other tools can be filled in for you."
+    ],
+    [
+      "Can I audit pages behind a login?",
+      "Not by URL, because the server cannot sign in. Open the page in your browser, view its source, and paste the HTML into the audit page instead."
+    ]
+  ]
+}-->
+<main id="main">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy load-in">
+        <span class="eyebrow"><b>Free</b> No signup · 7 SEO tools in one place</span>
+        <h1 class="h-display">Every SEO check, on <span class="hl">one desk.</span></h1>
+        <p class="lede">Paste a URL to see what is holding the page back in Google. Then fix it with tools that are already filled in with your site's details.</p>
+        <form class="urlform" action="/seo-audit" method="get" role="search">
+          <label for="home-url"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m13.5 13.5 3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span class="sr">Website address</span>
+            <input id="home-url" name="url" type="text" inputmode="url" autocomplete="url" placeholder="yourwebsite.com" required></label>
+          <button class="btn" type="submit">Audit free <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </form>
+        <div class="trust">
+          <span><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>24 checks per page</span>
+          <span><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Speed data from Google</span>
+          <span><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Results in about 20 seconds</span>
+        </div>
+      </div>
+
+      <div class="serp-demo" aria-label="Illustration: a website moving from position 5 to position 1 in search results after its SEO fixes">
+        <div class="serp-bar"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m13.5 13.5 3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span id="demo-q">pure silk sarees surat</span><i class="caret"></i></div>
+        <div class="serp-meta"><span>About 1,24,000 results</span><span id="demo-status">Before fixes</span></div>
+        <div class="serp-list" id="demo-list" aria-hidden="true"></div>
+        <div class="fixes" aria-hidden="true">
+          <span class="fix" data-fix="0"><b><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></b>Title rewritten</span>
+          <span class="fix" data-fix="1"><b><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></b>Schema added</span>
+          <span class="fix" data-fix="2"><b><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></b>PageSpeed 96</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Title length</span><span>Meta description</span><span>One H1</span><span>Heading order</span><span>Image alt text</span><span>Canonical URL</span><span>Mobile viewport</span><span>noindex</span><span>Open Graph</span><span>Twitter card</span><span>JSON-LD schema</span><span>HTTP status</span><span>HTTPS</span><span>301 vs 302</span><span>Server response</span><span>Brotli / gzip</span><span>robots.txt</span><span>XML sitemap</span><span>Core Web Vitals</span>
+      <span>Title length</span><span>Meta description</span><span>One H1</span><span>Heading order</span><span>Image alt text</span><span>Canonical URL</span><span>Mobile viewport</span><span>noindex</span><span>Open Graph</span><span>Twitter card</span><span>JSON-LD schema</span><span>HTTP status</span><span>HTTPS</span><span>301 vs 302</span><span>Server response</span><span>Brotli / gzip</span><span>robots.txt</span><span>XML sitemap</span><span>Core Web Vitals</span>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">The toolkit</span>
+        <h2 class="h2">Find the problem, then <span class="hl">fix it here.</span></h2>
+        <p class="lede">Each tool has its own page. After an audit, every one of them opens with your site's name, pages and keywords already filled in.</p>
+      </div>
+      <div class="bento">
+        <a class="card big reveal" href="/seo-audit">
+          <h3>SEO audit</h3>
+          <p>24 checks on any URL: on-page tags, crawling, server and Google PageSpeed, each with the exact fix.</p>
+          <div class="viz">
+            <div class="mini-dial"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#eef1f5" stroke-width="12"/><circle class="mini-arc" cx="60" cy="60" r="50" fill="none" stroke="#0b8f5a" stroke-width="12" stroke-linecap="round" stroke-dasharray="0 314"/></svg><span class="num" data-count="96">96</span></div>
+            <div class="mini-checks">
+              <div><span class="tagx pass">Pass</span><span>Title tag · 54 characters</span></div>
+              <div><span class="tagx pass">Pass</span><span>robots.txt allows this page</span></div>
+              <div><span class="tagx warn">Improve</span><span>2 images without alt text</span></div>
+              <div><span class="tagx fail">Fix</span><span>No JSON-LD schema found</span></div>
+            </div>
+          </div>
+          <span class="go">Audit a page <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="card reveal" style="--d:1" href="/meta-tag-generator">
+          <h3>Meta tags</h3>
+          <div class="viz v-serp"><div class="u">yourwebsite.com › products</div><div class="t">Pure Silk Sarees from Surat | Shree</div><div class="d">Factory-direct Banarasi and Kanjivaram sarees…</div><div class="v-meter"><i></i></div></div>
+          <p>Title and description with a live Google preview.</p>
+          <span class="go">Write meta tags <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="card reveal" style="--d:2" href="/schema-generator">
+          <h3>Schema</h3>
+          <div class="viz v-code">{
+  <span class="k">"@type"</span>: <span class="s">"LocalBusiness"</span>,
+  <span class="k">"name"</span>: <span class="s">"Shree Textiles"</span>
+}</div>
+          <p>JSON-LD for businesses, products, FAQs and articles.</p>
+          <span class="go">Generate schema <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="card reveal" style="--d:1" href="/hashtag-generator">
+          <h3>Hashtags</h3>
+          <div class="viz"><div class="v-chips"><span>#silksaree</span><span>#suratfashion</span><span>#banarasisaree</span><span>#madeinindia</span><span>#shreetextiles</span></div></div>
+          <p>Instagram hashtags, profile name, bio and YouTube tags.</p>
+          <span class="go">Build a social pack <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="card reveal" style="--d:2" href="/keyword-ideas">
+          <h3>Keyword ideas</h3>
+          <div class="viz v-kw"><div><span>silk saree near me</span><span class="intent i-Local">Local</span></div><div><span>buy silk saree online</span><span class="intent i-Transactional">Buying</span></div><div><span>how to identify pure silk</span><span class="intent i-Informational">Question</span></div></div>
+          <p>Local, buying and question searches from one seed.</p>
+          <span class="go">Find keywords <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+        <a class="card reveal" style="--d:3" href="/robots-txt-sitemap-generator">
+          <h3>Robots.txt &amp; sitemap</h3>
+          <div class="viz v-tree"><b>yourwebsite.com/</b>
+├─ silk-sarees
+├─ wholesale
+└─ contact</div>
+          <p>Both files, ready to upload to your site.</p>
+          <span class="go">Create the files <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">How it works</span>
+        <h2 class="h2">From URL to fixed page in three steps.</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><h3>Audit the page</h3><p>Enter any URL. Rankdesk downloads it like Googlebot does and runs 24 checks, plus Google's own PageSpeed test.</p></div>
+        <div class="step reveal" style="--d:1"><h3>Read the fix list</h3><p>Problems are sorted by what to fix first. Each one says what is wrong and exactly how to fix it.</p></div>
+        <div class="step reveal" style="--d:2"><h3>Generate the fixes</h3><p>Open a tool and your site's details are already there. Copy the meta tags, schema or sitemap and paste them into your site.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">What the audit checks</span>
+        <h2 class="h2">24 checks that decide whether Google can read, trust and show your page.</h2>
+      </div>
+      <div class="checkcols">
+        <div class="checkcol reveal"><h3>On the page <span class="n">16</span></h3><ul>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Title tag and meta description length</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>One H1 and a logical heading order</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Alt text on every image</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Canonical URL, language and charset</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Open Graph, Twitter card and favicon</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Valid JSON-LD schema</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Word count and link text</li></ul></div>
+        <div class="checkcol reveal" style="--d:1"><h3>Server &amp; crawling <span class="n">8</span></h3><ul>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>HTTP status code</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>HTTPS and the redirect chain</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Server response time and HTML size</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>gzip or Brotli compression</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>noindex in tags or headers</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>robots.txt rules for this page</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>XML sitemap, and whether it lists the page</li></ul></div>
+        <div class="checkcol reveal" style="--d:2"><h3>Speed from Google <span class="n">PageSpeed</span></h3><ul>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Performance, SEO, accessibility and best-practice scores</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Real-user Core Web Vitals: LCP, INP and CLS</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Lab timings on mobile or desktop</li>
+          <li><svg viewBox="0 0 16 16"><path d="m3.5 8.5 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>The biggest speed fixes, with time saved</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="section-head section-head-row reveal">
+        <div><span class="kicker">Guides</span>
+        <h2 class="h2">Learn the fix, <span class="hl">not just the score.</span></h2></div>
+        <a class="btn btn-ghost" href="/blog">All guides <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+      <div class="pgrid home-guides"><!--@guides--></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap faq-wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Questions</span>
+        <h2 class="h2">Good to know before you start.</h2>
+        <p class="lede">Can't find your answer? Email {{CONTACT_EMAIL}}.</p>
+      </div>
+      <div class="reveal" style="--d:1"><!--@faq--></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="night reveal">
+        <h2 class="h2">See what's holding your page back.</h2>
+        <p>It's free, it takes about 20 seconds, and you don't need an account.</p>
+        <form class="urlform" action="/seo-audit" method="get" role="search">
+          <label for="cta-url"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m13.5 13.5 3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span class="sr">Website address</span>
+            <input id="cta-url" name="url" type="text" inputmode="url" autocomplete="url" placeholder="yourwebsite.com" required></label>
+          <button class="btn" type="submit">Audit free</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>

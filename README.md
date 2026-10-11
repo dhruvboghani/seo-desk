@@ -69,11 +69,39 @@ Put it behind HTTPS. If it is for the team only, add a login or IP restriction i
 ## Files
 
 ```
-server.js          Pages, ads.txt, sitemap, and API: /api/fetch, /api/robots, /api/pagespeed
-public/index.html  The toolkit (no build step)
-public/about.html  About page
-public/privacy.html Privacy policy (includes the disclosures AdSense requires)
+server.js                 Pages, blog routes, ads.txt, sitemap, RSS and the API (/api/fetch, /api/robots, /api/pagespeed)
+lib/blog.js               Blog index, category pages, guide pages and RSS
+views/*.html              One file per page. Each starts with <!--@meta {...}--> holding its title, description and FAQ
+views/partials/           Shared head, header and footer
+public/assets/app.css     The design system and all page styles
+public/assets/app.js      Menu, scroll animations, copy buttons, ads and the shared "fill from a website" data
+public/assets/*.js        One script per tool page, plus home.js and blog.js
+content/blog/*.md         The guides, written in Markdown
+content/posts.json        The compiled guides (generated, commit it)
+public/blog/covers/       Cover images for the guides (generated, commit them)
+scripts/                  build-content.js, make-covers.py and the fonts used for covers
 ```
+
+## Adding or editing a guide
+
+1. Create `content/blog/your-url-slug.md` with front matter at the top:
+
+```
+---
+title: How to Write Title Tags That Get Clicked
+description: One or two sentences, 160 characters or fewer. Shown in Google and on the card.
+category: on-page        (technical, on-page, schema, local, keywords, social, strategy)
+tool: meta               (optional: audit, meta, schema, social, keywords, robots)
+date: 2026-10-20
+seo_title: Optional shorter title tag, 60 characters max
+---
+```
+
+2. Write the guide in Markdown below it. Use `##` for sections (they become the "On this page" links) and link to other guides as `/blog/slug`.
+3. Run `npm run build` to compile the guides, and `npm run covers` to draw the cover image (needs Python with Pillow: `pip install pillow`).
+4. Commit `content/posts.json` and the new files in `public/blog/covers/`, then push. Vercel also runs `npm run build` on every deploy.
+
+The guide appears on the blog, in its category, in the sitemap and in the RSS feed automatically.
 
 ## Next steps
 
@@ -81,3 +109,4 @@ public/privacy.html Privacy policy (includes the disclosures AdSense requires)
 - Multi-page crawl of a whole site
 - Saved projects and PDF reports per client
 - Login for team members
+- Author pages and more guides (aim for one new guide a week)

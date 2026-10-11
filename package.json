@@ -1,9 +1,20 @@
 {
   "name": "rankdesk",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "All-in-one SEO toolkit with URL-based audits",
   "main": "server.js",
-  "scripts": { "start": "node server.js" },
-  "engines": { "node": ">=18" },
-  "dependencies": { "express": "^4.21.2" }
+  "scripts": {
+    "start": "node server.js",
+    "build": "node scripts/build-content.js",
+    "covers": "python3 scripts/make-covers.py"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "marked": "^12.0.2"
+  }
 }

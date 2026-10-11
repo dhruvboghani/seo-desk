@@ -1,0 +1,78 @@
+<!--@meta {
+  "title": "Free Robots.txt & XML Sitemap Generator | Rankdesk",
+  "description": "Create a robots.txt file and an XML sitemap in seconds. Fill them from your live site, block private paths and copy files ready to upload. Free.",
+  "path": "/robots-txt-sitemap-generator",
+  "nav": "robots",
+  "name": "Robots.txt & sitemap generator",
+  "app": "Rankdesk Robots.txt and Sitemap Generator",
+  "scripts": [
+    "robots.js"
+  ],
+  "faq": [
+    [
+      "Where do I upload robots.txt and sitemap.xml?",
+      "In the root folder of your website, so they open at yourdomain.com/robots.txt and yourdomain.com/sitemap.xml. On most hosts that is the public_html or www folder. WordPress SEO plugins create both files for you."
+    ],
+    [
+      "Does blocking a page in robots.txt remove it from Google?",
+      "No. Robots.txt stops Google from crawling a page, but the address can still appear in results if other pages link to it. To keep a page out of Google, let it be crawled and add a noindex meta tag instead."
+    ],
+    [
+      "Which pages belong in the sitemap?",
+      "Only pages you want to appear in Google: pages that return status 200, are not blocked by robots.txt, have no noindex tag and are the canonical version. Leave out thank-you pages, carts, logins and filtered duplicates."
+    ],
+    [
+      "Does Google use priority and changefreq?",
+      "Google has said it ignores both. It does use lastmod when the date is accurate, so update it only when the page content really changes."
+    ]
+  ]
+}-->
+<main id="main">
+  <section class="tool-hero wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Robots.txt &amp; sitemap</span></nav>
+    <div class="load-in">
+      <h1 class="h1">Robots.txt and sitemap, <span class="hl">ready to upload.</span></h1>
+      <p class="lede">Tell search engines which pages to crawl and which to skip. Fill both files from your live site, then copy them to your site's root folder.</p>
+      <!--@srcbar-->
+    </div>
+  </section>
+  <div class="wrap">
+    <!--AD:top-->
+    <div class="desk">
+      <div class="desk-main">
+        <div class="cols">
+          <div class="panel stack">
+            <div class="panel-h" style="margin-bottom:0"><h2>Your site</h2></div>
+            <label class="field">Domain <input id="rb-domain" inputmode="url"></label>
+            <label class="field">Pages to include <span class="hint">One path per line</span><textarea id="rb-paths" rows="8" class="code"></textarea></label>
+            <label class="field">Paths to block from crawlers <span class="hint">One per line, for example /admin or /cart</span><textarea id="rb-block" rows="3" class="code"></textarea></label>
+            <div class="row2">
+              <label class="field">Update frequency <select id="rb-freq"><option>daily</option><option selected>weekly</option><option>monthly</option><option>yearly</option></select></label>
+              <label class="field">AI crawlers <select id="rb-ai"><option value="allow">Allow</option><option value="block">Block GPTBot and others</option></select></label>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="panel">
+              <div class="panel-h"><h2>robots.txt</h2><span class="count" id="rb-robots-c"></span></div>
+              <div class="out"><button class="chip-btn" data-copy="rb-robots" type="button">Copy</button><pre id="rb-robots"></pre></div>
+            </div>
+            <div class="panel">
+              <div class="panel-h"><h2>sitemap.xml</h2><span class="count" id="rb-sitemap-c"></span></div>
+              <div class="out"><button class="chip-btn" data-copy="rb-sitemap" type="button">Copy</button><pre id="rb-sitemap" style="max-height:420px"></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--@aside-->
+    </div>
+    <div class="prose-grid">
+      <div class="prose-card reveal"><h3>Upload, then test</h3><p>Open yourdomain.com/robots.txt in a browser to check it loads. Then audit a few pages here to confirm they are not blocked by mistake.</p></div>
+      <div class="prose-card reveal" style="--d:1"><h3>Submit the sitemap</h3><p>In Google Search Console, open Sitemaps, enter sitemap.xml and submit. Search Console then reports how many pages Google has indexed.</p></div>
+      <div class="prose-card reveal" style="--d:2"><h3>Never block CSS or JS</h3><p>Google needs your stylesheets and scripts to see the page the way visitors do. Block only private areas such as admin, cart and checkout.</p></div>
+    </div>
+    <section class="faq-wrap" style="margin-bottom:clamp(56px,7vw,96px)">
+      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About robots.txt and sitemaps</h2></div>
+      <div class="reveal" style="--d:1"><!--@faq--></div>
+    </section>
+  </div>
+</main>

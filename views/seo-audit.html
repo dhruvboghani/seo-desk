@@ -1,0 +1,132 @@
+<!--@meta {
+  "title": "Free SEO Audit Tool: Check Any Page in 20 Seconds | Rankdesk",
+  "description": "Run a free SEO audit on any URL: title, meta tags, headings, schema, redirects, robots.txt, sitemap and Google PageSpeed, with a clear fix for each.",
+  "path": "/seo-audit",
+  "nav": "audit",
+  "name": "SEO audit",
+  "app": "Rankdesk SEO Audit",
+  "scripts": [
+    "audit.js"
+  ],
+  "faq": [
+    [
+      "How is the SEO score calculated?",
+      "Each check that passes counts in full, each one marked Improve counts half, and each one marked Fix counts zero. The score is the share of points earned, out of 100. Information-only checks, such as a page with no images, are left out."
+    ],
+    [
+      "Why does my audit show different results from Google Search Console?",
+      "Rankdesk checks the page as it is right now. Search Console reports what Google saw the last time it crawled, which can be days or weeks old. Fix the problems here, then ask Google to recrawl the page with URL Inspection in Search Console."
+    ],
+    [
+      "Why are some things missing that I can see in my browser?",
+      "Rankdesk reads the HTML your server sends. If your site adds titles, text or schema later with JavaScript, those may not appear in the audit. Google can usually run that JavaScript, but it takes longer, so putting important tags in the HTML is safer."
+    ],
+    [
+      "The PageSpeed section shows an error. What should I do?",
+      "Google's PageSpeed test sometimes times out on slow pages or when many people use it at once. Wait a minute and run the audit again. The rest of the audit does not depend on it."
+    ]
+  ]
+}-->
+<main id="main">
+  <section class="tool-hero wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>SEO audit</span></nav>
+    <div class="load-in">
+      <h1 class="h1">Free <span class="hl">SEO audit</span> for any page.</h1>
+      <p class="lede">Enter a URL. Rankdesk reads the page the way Google does, runs 24 checks and Google's PageSpeed test, and tells you what to fix first.</p>
+      <form class="urlform" id="au-form" novalidate style="margin-top:26px;max-width:720px">
+        <label for="au-url"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m13.5 13.5 3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="sr">Page address</span>
+          <input id="au-url" type="text" inputmode="url" autocomplete="url" placeholder="yourwebsite.com/page"></label>
+        <select id="au-strategy" class="input" aria-label="PageSpeed device" style="width:auto;border:0;background:var(--sunk)"><option value="mobile">Mobile</option><option value="desktop">Desktop</option></select>
+        <button class="btn" type="submit" id="au-go">Run audit <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <!--AD:top-->
+    <div class="desk">
+      <div class="desk-main">
+        <p class="note err" id="au-error" role="alert" hidden></p>
+
+        <div class="panel empty" id="au-empty">
+          <div class="ill"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="5" width="26" height="30" rx="4" fill="#fff" stroke="currentColor" stroke-width="2"/><path d="M13 14h14M13 20h14M13 26h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="29" cy="29" r="7" fill="#ffe36e" stroke="currentColor" stroke-width="2"/><path d="m26 29 2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <h2>Your report will appear here</h2>
+            <p>Enter a page address above. The audit takes about 20 seconds, most of it waiting for Google's speed test.</p>
+            <div class="btns"><button class="btn btn-sm btn-ghost" type="button" id="au-try">Try it on Rankdesk's home page</button><button class="btn btn-sm btn-ghost" type="button" id="au-paste-open">Paste HTML instead</button></div>
+          </div>
+        </div>
+
+        <div class="panel" id="au-loading" hidden>
+          <div class="panel-h"><h2>Auditing <span id="au-loading-url"></span></h2></div>
+          <ul class="checks" id="au-steps"></ul>
+          <div class="progress"><i></i></div>
+        </div>
+
+        <div id="au-results" class="stack" hidden>
+          <div class="panel summary">
+            <div class="dial"><svg viewBox="0 0 132 132"><circle class="track" cx="66" cy="66" r="55"/><circle class="arc" id="au-arc" cx="66" cy="66" r="55" stroke-dasharray="0 346"/></svg><span class="num" id="au-score">0</span></div>
+            <div class="sum-main">
+              <h2 id="au-verdict">SEO score</h2>
+              <div class="u" id="au-sub"></div>
+              <div class="tally" id="au-tally"></div>
+            </div>
+            <div class="sum-side">
+              <a class="btn btn-sm btn-ghost" id="au-share" href="#">Copy link to this report</a>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-h"><h2>Checks</h2>
+              <div class="filters" role="group" aria-label="Filter checks">
+                <button type="button" data-f="all" aria-pressed="true">All</button>
+                <button type="button" data-f="fail" aria-pressed="false">Fix</button>
+                <button type="button" data-f="warn" aria-pressed="false">Improve</button>
+                <button type="button" data-f="pass" aria-pressed="false">Passed</button>
+              </div>
+            </div>
+            <div id="au-checks"></div>
+          </div>
+
+          <div class="cols">
+            <div class="panel"><div class="panel-h"><h2>Google PageSpeed</h2><span class="count" id="au-psi-dev"></span></div><div id="au-psi"></div></div>
+            <div class="panel"><div class="panel-h"><h2>Heading outline</h2></div><ul class="outline" id="au-outline"></ul></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-h"><h2>Fix it with</h2><span class="count" id="au-fixhost"></span></div>
+            <div class="fixwith">
+              <a href="/meta-tag-generator"><b>Meta tags</b><span>Title, description and share tags from this page</span></a>
+              <a href="/schema-generator"><b>Schema</b><span>JSON-LD with this site's name, logo and links</span></a>
+              <a href="/robots-txt-sitemap-generator"><b>Robots &amp; sitemap</b><span>This site's pages and rules</span></a>
+              <a href="/keyword-ideas"><b>Keyword ideas</b><span>Searches based on this page's topics</span></a>
+              <a href="/hashtag-generator"><b>Hashtags</b><span>A social pack for this brand</span></a>
+            </div>
+          </div>
+        </div>
+
+        <details class="panel" id="au-paste">
+          <summary style="cursor:pointer;font-weight:600">Audit pasted HTML instead</summary>
+          <div class="stack" style="margin-top:14px">
+            <p class="note">For pages behind a login or on your own computer: open the page, press Ctrl+U (Cmd+Option+U on Mac), copy everything and paste it here.</p>
+            <textarea id="au-html" class="input code" spellcheck="false" aria-label="Page HTML source" placeholder="&lt;!doctype html&gt;…"></textarea>
+            <div><button class="btn btn-sm" id="au-run" type="button">Audit pasted HTML</button></div>
+          </div>
+        </details>
+      </div>
+      <!--@aside-->
+    </div>
+
+    <div class="prose-grid">
+      <div class="prose-card reveal"><h3>What the score means</h3><p>80 or more means the page has no serious technical problems. Between 55 and 80, a few fixes will help Google read and show the page better. Under 55, start with the items marked Fix.</p></div>
+      <div class="prose-card reveal" style="--d:1"><h3>What to fix first</h3><ol><li>Anything that blocks indexing: noindex, robots.txt, errors.</li><li>Title, description and one clear H1.</li><li>Speed and mobile problems.</li><li>Schema and share tags.</li></ol></div>
+      <div class="prose-card reveal" style="--d:2"><h3>After you fix it</h3><p>Run the audit again to confirm. Then open Google Search Console, inspect the URL and click Request indexing so Google sees the changes sooner.</p></div>
+    </div>
+
+    <section class="faq-wrap" style="margin-bottom:clamp(56px,7vw,96px)">
+      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About the audit</h2></div>
+      <div class="reveal" style="--d:1"><!--@faq--></div>
+    </section>
+  </div>
+</main>
