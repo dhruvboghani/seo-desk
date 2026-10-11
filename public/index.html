@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rankdesk SEO Toolkit</title>
+<meta name="description" content="Free all-in-one SEO toolkit: audit any URL, check meta tags, robots.txt, sitemap and PageSpeed, and generate schema, hashtags, keyword ideas and sitemaps.">
+<link rel="canonical" href="{{SITE_URL}}/">
+<meta property="og:title" content="{{SITE_NAME}} SEO Toolkit">
+<meta property="og:description" content="Audit any URL and generate meta tags, schema, hashtags and sitemaps in one place.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{SITE_URL}}/">
+<!--ADS_HEAD-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: operator's console — fixed left rail of tools, one working panel, output wells beside inputs */
+:root{
+  --bg:#f3f6f5; --surface:#ffffff; --sunk:#eaf0ee; --ink:#14201d; --muted:#5a6a66; --line:#d6e0dc;
+  --accent:#0b6b5c; --accent-ink:#ffffff; --accent-soft:#dff0eb;
+  --good:#1d7a3c; --good-soft:#e2f3e7; --warn:#9a5c00; --warn-soft:#fbefd9; --bad:#b3261e; --bad-soft:#fbe4e2;
+  --serp-title:#1a0dab; --serp-url:#202124; --serp-text:#4d5156;
+  --f-display:"Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --r:8px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1413; --surface:#162019; --sunk:#111a18; --ink:#e3ebe8; --muted:#94a6a1; --line:#2a3834;
+  --accent:#4fc3a9; --accent-ink:#06231d; --accent-soft:#163029;
+  --good:#62c784; --good-soft:#15301f; --warn:#f0b452; --warn-soft:#33270f; --bad:#f2857c; --bad-soft:#3a1a18;
+  --serp-title:#99c3ff; --serp-url:#dadce0; --serp-text:#bdc1c6; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0e1413; --surface:#162019; --sunk:#111a18; --ink:#e3ebe8; --muted:#94a6a1; --line:#2a3834;
+  --accent:#4fc3a9; --accent-ink:#06231d; --accent-soft:#163029;
+  --good:#62c784; --good-soft:#15301f; --warn:#f0b452; --warn-soft:#33270f; --bad:#f2857c; --bad-soft:#3a1a18;
+  --serp-title:#99c3ff; --serp-url:#dadce0; --serp-text:#bdc1c6; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.rail{border-right:1px solid var(--line);background:var(--surface);padding-block:20px;padding-inline:14px;position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow-y:auto}
+.brand{display:flex;align-items:baseline;gap:6px;padding-inline:8px;margin-bottom:4px}
+.brand b{font-family:var(--f-display);font-weight:800;font-size:22px;letter-spacing:-.02em}
+.brand span{font-family:var(--f-mono);font-size:11px;color:var(--accent)}
+.tag{padding-inline:8px;color:var(--muted);font-size:12.5px;margin:0 0 18px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{all:unset;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;border-radius:6px;font-weight:500;color:var(--ink)}
+.nav button small{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.nav button:hover{background:var(--sunk)}
+.nav button[aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+.nav button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.main{padding-block:28px 60px;padding-inline:clamp(16px,3vw,40px);min-width:0}
+.panel-head{max-width:860px;margin-bottom:22px}
+.panel-head h1{font-family:var(--f-display);font-weight:800;font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.panel-head p{margin:0;color:var(--muted);max-width:68ch}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.cols > *{min-width:0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.box h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 14px;font-weight:600}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600}
+label .hint{font-weight:400;color:var(--muted);font-size:12px}
+.lbl{display:flex;justify-content:space-between;gap:8px}
+.count{font-family:var(--f-mono);font-size:11.5px;font-weight:500;color:var(--muted)}
+.count.ok{color:var(--good)} .count.over{color:var(--bad)} .count.low{color:var(--warn)}
+input,select,textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%}
+textarea{resize:vertical;min-height:84px}
+textarea.code{font-family:var(--f-mono);font-size:12.5px;min-height:260px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.btn{all:unset;cursor:pointer;font-weight:600;font-size:13px;padding:8px 14px;border-radius:6px;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;gap:6px}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.out{position:relative}
+.out pre{margin:0;background:var(--sunk);border:1px solid var(--line);border-radius:6px;padding:14px;font-family:var(--f-mono);font-size:12.5px;line-height:1.6;overflow-x:auto;white-space:pre;max-height:520px}
+.out .copy{position:absolute;top:8px;right:8px}
+.copy{all:unset;cursor:pointer;font-size:12px;font-weight:600;padding:4px 10px;border-radius:5px;background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+.copy:focus-visible{outline:2px solid var(--accent)}
+.copy.done{background:var(--good-soft);color:var(--good);border-color:transparent}
+/* audit */
+.score{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.dial{width:92px;height:92px;flex:none}
+.score .big{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1;font-variant-numeric:tabular-nums}
+.score .sub{color:var(--muted);font-size:13px}
+.tally{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;font-variant-numeric:tabular-nums}
+.pill.pass{background:var(--good-soft);color:var(--good)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.fail{background:var(--bad-soft);color:var(--bad)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.checks li{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;padding-block:12px;border-top:1px solid var(--line)}
+.checks li:first-child{border-top:0}
+.checks .st{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:3px 0;border-radius:4px;text-align:center;height:fit-content}
+.st.pass{background:var(--good-soft);color:var(--good)} .st.warn{background:var(--warn-soft);color:var(--warn)} .st.fail{background:var(--bad-soft);color:var(--bad)} .st.info{background:var(--sunk);color:var(--muted)}
+.checks b{display:block;font-size:14px}
+.checks .d{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.checks .fx{font-size:13px;margin-top:3px}
+.outline{font-family:var(--f-mono);font-size:12.5px;margin:0;padding:0;list-style:none}
+.outline li{padding:2px 0;overflow-wrap:anywhere}
+/* serp */
+.serp{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;font-family:Arial,Helvetica,sans-serif}
+.serp .site{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.serp .fav{width:26px;height:26px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--line)}
+.serp .sn{font-size:14px;color:var(--serp-url);line-height:1.2}
+.serp .su{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.serp .st2{color:var(--serp-title);font-size:20px;line-height:1.3;margin:2px 0 3px}
+.serp .sd{color:var(--serp-text);font-size:14px;line-height:1.58}
+.meter{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;background:var(--good)}
+.meter i.over{background:var(--bad)} .meter i.low{background:var(--warn)}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--f-mono);font-size:12.5px;padding:4px 9px;border-radius:5px;background:var(--sunk);border:1px solid var(--line);cursor:pointer}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.grp{display:flex;flex-direction:column;gap:8px}
+.grp h3{margin:0;font-size:13px;font-weight:600}
+.grp h3 span{color:var(--muted);font-weight:400}
+.toggles{display:flex;flex-wrap:wrap;gap:14px}
+.toggles label{flex-direction:row;align-items:center;gap:6px;font-weight:500}
+.toggles input{width:auto}
+/* table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px;max-height:520px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}
+th{position:sticky;top:0;background:var(--sunk);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.k{font-family:var(--f-mono);font-size:12.5px}
+.intent{font-size:11px;font-weight:600;padding:2px 7px;border-radius:99px;white-space:nowrap}
+.i-Local{background:var(--accent-soft);color:var(--accent)} .i-Commercial{background:var(--warn-soft);color:var(--warn)} .i-Transactional{background:var(--good-soft);color:var(--good)} .i-Informational{background:var(--sunk);color:var(--muted)}
+/* tools */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.tool{display:flex;flex-direction:column;gap:4px;padding:14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);text-decoration:none;color:var(--ink)}
+.tool:hover{border-color:var(--accent)}
+.tool:focus-visible{outline:2px solid var(--accent)}
+.tool b{font-size:14px}
+.tool span{font-size:13px;color:var(--muted)}
+.tool em{font-style:normal;font-family:var(--f-mono);font-size:11px;color:var(--accent)}
+.sec-title{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:26px 0 10px;font-weight:600}
+.note{font-size:13px;color:var(--muted);background:var(--sunk);border-radius:6px;padding:10px 12px;margin:0}
+.ex{font-family:var(--f-mono);font-size:10.5px;color:var(--warn);background:var(--warn-soft);padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+.theme{all:unset;cursor:pointer;margin-top:18px;margin-inline:8px;font-size:12px;color:var(--muted)}
+.theme:focus-visible{outline:2px solid var(--accent)}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .rail{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding-inline:16px}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px}
+  .nav button{white-space:nowrap}
+  .nav button small{display:none}
+  .tag{margin-bottom:12px}
+  .theme{display:none}
+  .cols{grid-template-columns:1fr}
+}
+@media (max-width:520px){ .row2{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+body{margin:0}
+[hidden]{display:none!important}
+.urlbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;max-width:860px;margin-bottom:16px;padding:12px}
+.urlbar input{flex:1 1 280px;font-size:15px}
+.urlbar select{width:auto}
+.btn[disabled]{opacity:.55;cursor:progress}
+.status{max-width:860px;margin:0 0 16px}
+.status.err{background:var(--bad-soft);color:var(--bad)}
+.gauges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.gauge{text-align:center;padding:10px 4px;border-radius:6px;background:var(--sunk)}
+.gauge b{display:block;font-family:var(--f-display);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.gauge span{font-size:11.5px;color:var(--muted)}
+.g-good b{color:var(--good)} .g-mid b{color:var(--warn)} .g-bad b{color:var(--bad)}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;font-size:13.5px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+.kv dd.good{color:var(--good)} .kv dd.mid{color:var(--warn)} .kv dd.bad{color:var(--bad)}
+.minihead{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 8px}
+.opps{margin:0;padding-left:18px;font-size:13.5px;display:flex;flex-direction:column;gap:4px}
+.opps span{color:var(--muted)}
+details.box summary{cursor:pointer;font-weight:600}
+details.box[open] summary{margin-bottom:12px}
+.spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-1px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (max-width:520px){.gauges{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ad slots: reserved height prevents layout shift; unfilled slots collapse */
+.ad{display:flex;flex-direction:column;gap:4px;max-width:100%;overflow:hidden}
+.ad-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.ad-top{max-width:860px;min-height:114px;margin-bottom:22px}
+.ad-bottom{max-width:1100px;min-height:274px;margin-top:32px}
+.ad-side{margin-top:22px;padding-inline:4px;min-height:620px}
+.ad:has(ins[data-ad-status="unfilled"]){display:none}
+.ad-box{flex:1;display:grid;place-items:center;border:1.5px dashed var(--line);border-radius:6px;color:var(--muted);font-family:var(--f-mono);font-size:12px;background:var(--sunk)}
+.foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.foot a{color:var(--muted)} .foot a:hover{color:var(--accent)}
+@media (max-width:900px){.ad-side{display:none}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="rail">
+    <div class="brand"><b>Rankdesk</b><span>v0.1</span></div>
+    <p class="tag">Every SEO check and generator in one place.</p>
+    <nav class="nav" role="tablist" aria-label="Tools">
+      <button role="tab" data-tab="audit" aria-selected="true">Page audit <small>HTML</small></button>
+      <button role="tab" data-tab="meta" aria-selected="false">Meta &amp; SERP <small>&lt;head&gt;</small></button>
+      <button role="tab" data-tab="schema" aria-selected="false">Schema <small>JSON-LD</small></button>
+      <button role="tab" data-tab="social" aria-selected="false">Social pack <small>#</small></button>
+      <button role="tab" data-tab="keywords" aria-selected="false">Keywords <small>ideas</small></button>
+      <button role="tab" data-tab="robots" aria-selected="false">Robots &amp; sitemap <small>.txt .xml</small></button>
+      <button role="tab" data-tab="tools" aria-selected="false">Free data tools <small>links</small></button>
+    </nav>
+    <button class="theme" id="themeBtn" type="button">Switch theme</button>
+    <!--AD:side-->
+  </aside>
+
+  <main class="main">
+  <!--AD:top-->
+
+  <!-- AUDIT -->
+  <section id="tab-audit" data-panel>
+    <div class="panel-head">
+      <h1>Page audit</h1>
+      <p>Enter any page URL to check its meta tags, headings, images and schema, plus the server response, robots.txt, sitemap and Google PageSpeed scores.</p>
+    </div>
+    <form class="urlbar box" id="au-form" novalidate>
+      <input id="au-url" type="text" inputmode="url" placeholder="https://example.com/page" aria-label="Page URL" autocomplete="url">
+      <select id="au-strategy" aria-label="PageSpeed device"><option value="mobile">Mobile</option><option value="desktop">Desktop</option></select>
+      <button class="btn" type="submit" id="au-go">Audit URL</button>
+    </form>
+    <p class="note status" id="au-status" hidden></p>
+    <div class="cols">
+      <div class="stack">
+        <div class="box">
+          <div class="score">
+            <svg class="dial" viewBox="0 0 100 100" aria-hidden="true">
+              <circle cx="50" cy="50" r="42" fill="none" stroke="var(--sunk)" stroke-width="10"></circle>
+              <circle id="au-arc" cx="50" cy="50" r="42" fill="none" stroke="var(--good)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 264" transform="rotate(-90 50 50)"></circle>
+            </svg>
+            <div style="min-width:0">
+              <div class="big" id="au-score">–</div>
+              <div class="sub" id="au-sub">SEO score out of 100</div>
+              <div class="tally" id="au-tally"></div>
+            </div>
+          </div>
+        </div>
+        <div class="box"><h2>On-page checks</h2><ul class="checks" id="au-checks"></ul></div>
+        <div class="box"><h2>Heading outline</h2><ul class="outline" id="au-outline"></ul></div>
+      </div>
+      <div class="stack">
+        <div class="box"><h2>Server &amp; crawling</h2><ul class="checks" id="au-server"><li><span class="st info">Waiting</span><div><b>Run a URL audit</b><div class="d">Status code, redirects, HTTPS, response time, robots.txt and sitemap appear here.</div></div></li></ul></div>
+        <div class="box"><h2>Google PageSpeed</h2><div id="au-psi"><p class="note">Speed and Core Web Vitals from Google appear here after a URL audit. This step takes 20–60 seconds.</p></div></div>
+        <details class="box" id="au-paste">
+          <summary>Audit pasted HTML instead</summary>
+          <div class="stack">
+            <textarea id="au-html" class="code" spellcheck="false" aria-label="Page HTML source"></textarea>
+            <div class="btns">
+              <button class="btn" id="au-run" type="button">Audit pasted HTML</button>
+              <button class="btn ghost" id="au-sample" type="button">Load sample</button>
+            </div>
+            <p class="note">Useful for pages behind a login or on a local dev server.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- META -->
+  <section id="tab-meta" data-panel hidden>
+    <div class="panel-head">
+      <h1>Meta tags &amp; Google preview</h1>
+      <p>Fill in the page details to get title, description, canonical, Open Graph and Twitter tags, with a live preview of the Google result.</p>
+    </div>
+    <div class="cols">
+      <div class="box stack">
+        <h2>Page details <span class="ex">example</span></h2>
+        <label><span class="lbl">Title tag <span class="count" id="mt-title-c"></span></span>
+          <input id="mt-title" value="Pure Silk Sarees Wholesale in Surat | Shree Textiles"></label>
+        <label><span class="lbl">Meta description <span class="count" id="mt-desc-c"></span></span>
+          <textarea id="mt-desc" rows="3">Buy pure silk, Banarasi and Kanjivaram sarees direct from our Surat factory. Wholesale rates for dealers, retail orders shipped across India.</textarea></label>
+        <label>Page URL <input id="mt-url" value="https://shreetextiles.in/silk-sarees"></label>
+        <div class="row2">
+          <label>Site name <input id="mt-site" value="Shree Textiles"></label>
+          <label>Page type <select id="mt-type"><option value="website">website</option><option value="article">article</option><option value="product">product</option></select></label>
+        </div>
+        <label>Share image URL <span class="hint">1200 × 630 px works on WhatsApp, Facebook and LinkedIn</span>
+          <input id="mt-img" value="https://shreetextiles.in/og/silk-sarees.jpg"></label>
+        <div class="row2">
+          <label>Language / locale <input id="mt-locale" value="en_IN"></label>
+          <label>X (Twitter) handle <input id="mt-tw" value="@shreetextiles"></label>
+        </div>
+        <div class="toggles"><label><input type="checkbox" id="mt-noindex"> Hide from Google (noindex)</label></div>
+      </div>
+      <div class="stack">
+        <div class="box stack">
+          <h2>Google preview</h2>
+          <div class="serp">
+            <div class="site"><div class="fav" id="sp-fav">S</div><div><div class="sn" id="sp-name"></div><div class="su" id="sp-url"></div></div></div>
+            <div class="st2" id="sp-title"></div>
+            <div class="sd" id="sp-desc"></div>
+          </div>
+          <div class="row2">
+            <div><div class="lbl" style="font-size:12px"><span>Title width</span><span class="count" id="sp-tw"></span></div><div class="meter"><i id="sp-tm"></i></div></div>
+            <div><div class="lbl" style="font-size:12px"><span>Description width</span><span class="count" id="sp-dw"></span></div><div class="meter"><i id="sp-dm"></i></div></div>
+          </div>
+        </div>
+        <div class="box"><h2>Paste into &lt;head&gt;</h2><div class="out"><button class="copy" data-copy="mt-out" type="button">Copy</button><pre id="mt-out"></pre></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCHEMA -->
+  <section id="tab-schema" data-panel hidden>
+    <div class="panel-head">
+      <h1>Schema generator</h1>
+      <p>Structured data helps Google show rich results like ratings, FAQs and business details. Pick a type, fill the fields, and paste the script into the page.</p>
+    </div>
+    <div class="cols">
+      <div class="box stack">
+        <h2>Fields <span class="ex">example</span></h2>
+        <label>Schema type
+          <select id="sc-type">
+            <option value="LocalBusiness">Local business</option>
+            <option value="Organization">Organization</option>
+            <option value="Product">Product</option>
+            <option value="FAQPage">FAQ page</option>
+            <option value="Article">Article / blog post</option>
+          </select></label>
+        <div class="stack" id="sc-fields"></div>
+      </div>
+      <div class="stack">
+        <div class="box"><h2>JSON-LD</h2><div class="out"><button class="copy" data-copy="sc-out" type="button">Copy</button><pre id="sc-out"></pre></div></div>
+        <p class="note">After publishing, test the page in Google's Rich Results Test (link in Free data tools).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL -->
+  <section id="tab-social" data-panel hidden>
+    <div class="panel-head">
+      <h1>Social pack</h1>
+      <p>Hashtags, an Instagram name and bio, and YouTube tags built from the brand, niche and city. Click hashtags to add or remove them from the copy set.</p>
+    </div>
+    <div class="cols">
+      <div class="box stack">
+        <h2>Brand details <span class="ex">example</span></h2>
+        <label>Brand name <input id="so-brand" value="Shree Textiles"></label>
+        <label>Niche keywords <span class="hint">Comma separated, most important first</span>
+          <input id="so-niche" value="silk saree, banarasi saree, wedding saree, saree wholesale"></label>
+        <div class="row2">
+          <label>City <input id="so-city" value="Surat"></label>
+          <label>Country tag <input id="so-country" value="India"></label>
+        </div>
+        <label>Offer for bio <input id="so-offer" value="Factory-direct pure silk sarees"></label>
+        <label>Call to action <input id="so-cta" value="DM for wholesale price list"></label>
+        <label>Hashtags per post <span class="hint">Instagram has been lowering its limit, so check the current number</span>
+          <select id="so-n"><option>3</option><option selected>5</option><option>10</option><option>15</option><option>30</option></select></label>
+      </div>
+      <div class="stack">
+        <div class="box stack">
+          <h2>Hashtags</h2>
+          <div id="so-groups" class="stack"></div>
+          <div class="out"><button class="copy" data-copy="so-tags" type="button">Copy</button><pre id="so-tags"></pre></div>
+        </div>
+        <div class="box stack">
+          <h2>Instagram profile</h2>
+          <label><span class="lbl">Name field (searchable) <span class="count" id="so-name-c"></span></span></label>
+          <div class="out"><button class="copy" data-copy="so-name" type="button">Copy</button><pre id="so-name"></pre></div>
+          <label><span class="lbl">Bio <span class="count" id="so-bio-c"></span></span></label>
+          <div class="out"><button class="copy" data-copy="so-bio" type="button">Copy</button><pre id="so-bio"></pre></div>
+        </div>
+        <div class="box stack">
+          <h2>YouTube tags <span class="count" id="so-yt-c"></span></h2>
+          <div class="out"><button class="copy" data-copy="so-yt" type="button">Copy</button><pre id="so-yt" style="white-space:pre-wrap"></pre></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEYWORDS -->
+  <section id="tab-keywords" data-panel hidden>
+    <div class="panel-head">
+      <h1>Keyword ideas</h1>
+      <p>Expand a seed keyword into the searches people actually type: local, buying, price and question forms. Check search volume for the ones you keep in Keyword Planner or Google Trends.</p>
+    </div>
+    <div class="cols">
+      <div class="box stack">
+        <h2>Seeds <span class="ex">example</span></h2>
+        <label>Seed keywords <span class="hint">One per line</span>
+          <textarea id="kw-seed" rows="3">silk saree
+banarasi saree</textarea></label>
+        <label>Cities <span class="hint">Comma separated</span>
+          <input id="kw-city" value="Surat, Ahmedabad, Mumbai"></label>
+        <div class="toggles">
+          <label><input type="checkbox" id="kw-g-local" checked> Local</label>
+          <label><input type="checkbox" id="kw-g-com" checked> Commercial</label>
+          <label><input type="checkbox" id="kw-g-tx" checked> Transactional</label>
+          <label><input type="checkbox" id="kw-g-info" checked> Questions</label>
+        </div>
+        <div class="tally" id="kw-tally"></div>
+      </div>
+      <div class="stack">
+        <div class="box stack">
+          <div class="lbl"><h2 style="margin:0">Ideas</h2><button class="copy" data-copy="kw-plain" type="button">Copy list</button></div>
+          <div class="tbl"><table><thead><tr><th>Keyword</th><th>Intent</th></tr></thead><tbody id="kw-body"></tbody></table></div>
+          <pre id="kw-plain" hidden></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROBOTS -->
+  <section id="tab-robots" data-panel hidden>
+    <div class="panel-head">
+      <h1>Robots.txt &amp; sitemap</h1>
+      <p>Generate both files for the site root. Upload them so they open at yourdomain.com/robots.txt and yourdomain.com/sitemap.xml, then submit the sitemap in Search Console.</p>
+    </div>
+    <div class="cols">
+      <div class="box stack">
+        <h2>Site <span class="ex">example</span></h2>
+        <label>Domain <input id="rb-domain" value="https://shreetextiles.in"></label>
+        <label>Pages to include <span class="hint">One path per line</span>
+          <textarea id="rb-paths" rows="7">/
+/silk-sarees
+/banarasi-sarees
+/wholesale
+/about
+/contact</textarea></label>
+        <label>Paths to block from crawlers <span class="hint">One per line</span>
+          <textarea id="rb-block" rows="3">/admin
+/cart
+/checkout</textarea></label>
+        <label>Update frequency <select id="rb-freq"><option>daily</option><option selected>weekly</option><option>monthly</option><option>yearly</option></select></label>
+      </div>
+      <div class="stack">
+        <div class="box"><h2>robots.txt</h2><div class="out"><button class="copy" data-copy="rb-robots" type="button">Copy</button><pre id="rb-robots"></pre></div></div>
+        <div class="box"><h2>sitemap.xml</h2><div class="out"><button class="copy" data-copy="rb-sitemap" type="button">Copy</button><pre id="rb-sitemap"></pre></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tab-tools" data-panel hidden>
+    <div class="panel-head">
+      <h1>Free data tools</h1>
+      <p>Live data such as search volume, real rankings and backlinks comes from these services. Each opens in a new tab.</p>
+    </div>
+    <div id="tl-list"></div>
+  </section>
+
+  <!--AD:bottom-->
+  <footer class="foot">
+    <span>© {{YEAR}} {{SITE_NAME}}</span>
+    <a href="/about">About</a>
+    <a href="/privacy">Privacy policy</a>
+    <span>Contact: {{CONTACT_EMAIL}}</span>
+  </footer>
+  </main>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- ads: fill each visible slot once, never refresh ---------- */
+function fillAds(){
+  document.querySelectorAll('ins.adsbygoogle:not([data-filled])').forEach(ins=>{
+    if(!ins.offsetWidth) return;
+    ins.setAttribute('data-filled','1');
+    try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+  });
+}
+if(document.readyState==='complete') fillAds(); else addEventListener('load',fillAds);
+addEventListener('resize',()=>{clearTimeout(fillAds.t);fillAds.t=setTimeout(fillAds,400)});
+
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll('.nav button')];
+function show(name){
+  tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===name));
+  document.querySelectorAll('[data-panel]').forEach(p=>p.hidden=p.id!=='tab-'+name);
+  try{localStorage.setItem('rd-tab',name)}catch(e){}
+}
+tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+let start='audit';
+const h=(location.hash||'').slice(1);
+if(new URLSearchParams(location.search).get('url')) start='audit'; else if(tabs.some(b=>b.dataset.tab===h)) start=h; else { try{const s=localStorage.getItem('rd-tab'); if(s&&tabs.some(b=>b.dataset.tab===s)) start=s;}catch(e){} }
+show(start);
+
+$('themeBtn').addEventListener('click',()=>{
+  const r=document.documentElement, cur=r.getAttribute('data-theme');
+  const dark=cur?cur==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  r.setAttribute('data-theme',dark?'light':'dark');
+});
+
+/* ---------- copy ---------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-copy]'); if(!b) return;
+  const el=$(b.dataset.copy), txt=el.textContent;
+  const ok=()=>{b.textContent='Copied';b.classList.add('done');setTimeout(()=>{b.textContent=b.dataset.copy==='kw-plain'?'Copy list':'Copy';b.classList.remove('done')},1400)};
+  const fallback=()=>{ if(el.hidden) return; const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent='Selected, press Ctrl+C'; };
+  try{ navigator.clipboard.writeText(txt).then(ok,fallback); }catch(err){ fallback(); }
+});
+
+function counter(el,len,lo,hi){
+  el.textContent=len+' / '+hi;
+  el.className='count '+(len>hi?'over':len<lo?'low':'ok');
+}
+
+/* ---------- AUDIT ---------- */
+const SAMPLE=`<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <meta name="description" content="Shree Textiles makes pure silk and Banarasi sarees in Surat. Wholesale for dealers and retail delivery across India.">
+  <meta property="og:title" content="Shree Textiles – Silk Sarees from Surat">
+  <link rel="icon" href="/favicon.ico">
+</head>
+<body>
+  <header><img src="/logo.png"><nav><a href="/">Home</a> <a href="/silk-sarees">Silk sarees</a> <a href="https://instagram.com/shreetextiles">Instagram</a></nav></header>
+  <h1>Pure Silk Sarees, Direct from Our Surat Factory</h1>
+  <p>Since 1998 we have woven silk, Banarasi and Kanjivaram sarees for dealers across Gujarat and Maharashtra.</p>
+  <h3>New arrivals</h3>
+  <img src="/img/banarasi-red.jpg" alt="Red Banarasi silk saree with gold zari border">
+  <img src="/img/kanjivaram-green.jpg">
+  <h2>Wholesale enquiries</h2>
+  <p>Call or WhatsApp our team for the latest dealer price list.</p>
+  <h1>Contact us</h1>
+</body>
+</html>`;
+
+function audit(html,ctx={}){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const c=[]; const add=(status,label,detail,fix)=>c.push({status,label,detail,fix});
+  const meta=n=>doc.querySelector(`meta[name="${n}" i]`)?.getAttribute('content')?.trim();
+  const prop=p=>doc.querySelector(`meta[property="${p}" i]`)?.getAttribute('content')?.trim();
+
+  const title=doc.querySelector('title')?.textContent.trim()||'';
+  if(!title) add('fail','Title tag','No <title> found.','Add a unique title of 30–60 characters with the main keyword near the start.');
+  else if(title.length<30) add('warn','Title tag',`"${title}" is ${title.length} characters, which is short.`,'Use 30–60 characters and include the main keyword and brand.');
+  else if(title.length>60) add('warn','Title tag',`${title.length} characters. Google will likely cut it off.`,'Trim to 60 characters or fewer.');
+  else add('pass','Title tag',`"${title}" (${title.length} characters)`);
+
+  const desc=meta('description')||'';
+  if(!desc) add('fail','Meta description','Missing.','Add 140–160 characters that summarise the page and invite the click.');
+  else if(desc.length<70) add('warn','Meta description',`${desc.length} characters, which is short.`,'Aim for 140–160 characters.');
+  else if(desc.length>160) add('warn','Meta description',`${desc.length} characters. Google will cut it off.`,'Trim to 160 characters or fewer.');
+  else add('pass','Meta description',`${desc.length} characters`);
+
+  const h1s=[...doc.querySelectorAll('h1')];
+  if(!h1s.length) add('fail','H1 heading','No H1 on the page.','Add one H1 that states the page topic with the main keyword.');
+  else if(h1s.length>1) add('warn','H1 heading',`${h1s.length} H1 tags found.`,'Keep one H1 and change the others to H2.');
+  else add('pass','H1 heading',`"${h1s[0].textContent.trim()}"`);
+
+  const hs=[...doc.querySelectorAll('h1,h2,h3,h4,h5,h6')];
+  let skip=null, prev=0;
+  hs.forEach(hd=>{const l=+hd.tagName[1]; if(prev&&l>prev+1&&!skip) skip=`H${prev} jumps to H${l} at "${hd.textContent.trim().slice(0,40)}"`; prev=l;});
+  if(!hs.length) add('warn','Heading structure','No headings found.','Break the content up with H2 and H3 headings.');
+  else if(skip) add('warn','Heading structure',skip+'.','Go down one level at a time (H1, then H2, then H3).');
+  else add('pass','Heading structure',`${hs.length} headings in a logical order`);
+
+  const imgs=[...doc.querySelectorAll('img')];
+  const noAlt=imgs.filter(i=>!i.hasAttribute('alt'));
+  if(!imgs.length) add('info','Image alt text','No images on the page.');
+  else if(noAlt.length) add(noAlt.length/imgs.length>.5?'fail':'warn','Image alt text',`${noAlt.length} of ${imgs.length} images have no alt text: ${noAlt.slice(0,3).map(i=>i.getAttribute('src')).join(', ')}`,'Describe each image in a short phrase. Use alt="" only for decorative images.');
+  else add('pass','Image alt text',`All ${imgs.length} images have alt text`);
+
+  const canon=doc.querySelector('link[rel="canonical" i]')?.getAttribute('href');
+  canon?add('pass','Canonical URL',canon):add('warn','Canonical URL','Missing.','Add <link rel="canonical" href="full page URL"> to prevent duplicate-content issues.');
+
+  meta('viewport')?add('pass','Mobile viewport',meta('viewport')):add('fail','Mobile viewport','Missing. The page may not be treated as mobile-friendly.','Add <meta name="viewport" content="width=device-width, initial-scale=1">.');
+
+  const lang=doc.documentElement.getAttribute('lang');
+  lang?add('pass','Language',`lang="${lang}"`):add('warn','Language','No lang attribute on <html>.','Add lang="en" (or the page language) to the html tag.');
+
+  const robots=meta('robots')||'';
+  const xr=(ctx.headers&&ctx.headers['x-robots-tag'])||'';
+  if(/noindex/i.test(robots)) add('fail','Indexing','robots meta says noindex. Google will not show this page.','Remove noindex if the page should rank.');
+  else if(/noindex/i.test(xr)) add('fail','Indexing','The X-Robots-Tag server header says noindex. Google will not show this page.','Remove noindex from the server or CDN headers.');
+  else add('pass','Indexing',robots?`robots: ${robots}`:'Indexable (no robots restriction)');
+
+  const ogMiss=['og:title','og:description','og:image','og:url'].filter(p=>!prop(p));
+  ogMiss.length?add(ogMiss.length>=3?'fail':'warn','Open Graph tags',`Missing: ${ogMiss.join(', ')}`,'These control the link preview on WhatsApp, Facebook and LinkedIn. Use the Meta & SERP tab.'):add('pass','Open Graph tags','Title, description, image and URL are set');
+
+  meta('twitter:card')?add('pass','Twitter card',meta('twitter:card')):add('warn','Twitter card','Missing.','Add <meta name="twitter:card" content="summary_large_image">.');
+
+  const lds=[...doc.querySelectorAll('script[type="application/ld+json" i]')];
+  if(!lds.length) add('warn','Structured data','No JSON-LD schema found.','Add LocalBusiness or Organization schema from the Schema tab.');
+  else{
+    const types=[]; let bad=0;
+    lds.forEach(s=>{try{const j=JSON.parse(s.textContent);(Array.isArray(j)?j:j['@graph']||[j]).forEach(o=>o['@type']&&types.push(o['@type']))}catch(e){bad++}});
+    bad?add('fail','Structured data',`${bad} JSON-LD block(s) contain invalid JSON.`,'Fix the syntax and check with the Rich Results Test.'):add('pass','Structured data',`Types: ${types.join(', ')||'unknown'}`);
+  }
+
+  doc.querySelector('meta[charset]')||meta('Content-Type')?add('pass','Character set','Declared'):add('warn','Character set','Missing.','Add <meta charset="utf-8"> as the first tag in <head>.');
+
+  doc.querySelector('link[rel~="icon" i]')?add('pass','Favicon','Present'):add('warn','Favicon','Missing.','Add a favicon. Google shows it next to the result on mobile.');
+
+  const body=doc.body?doc.body.cloneNode(true):null;
+  body&&body.querySelectorAll('script,style,noscript').forEach(n=>n.remove());
+  const words=body?(body.textContent.match(/\S+/g)||[]).length:0;
+  words<300?add('warn','Content length',`About ${words} words of visible text.`,'Pages that rank usually have 300+ words that answer the searcher\'s question.'):add('pass','Content length',`About ${words} words`);
+
+  const links=[...doc.querySelectorAll('a[href]')];
+  let baseHost=null; try{baseHost=new URL(ctx.url).hostname.replace(/^www\./,'')}catch(e){}
+  const ext=links.filter(a=>{const h=a.getAttribute('href'); if(!/^https?:\/\//i.test(h)) return false; if(!baseHost) return true; try{return new URL(h).hostname.replace(/^www\./,'')!==baseHost}catch(e){return true}}).length;
+  const empty=links.filter(a=>!a.textContent.trim()&&!a.querySelector('img[alt]')&&!a.getAttribute('aria-label')).length;
+  empty?add('warn','Links',`${links.length} links (${links.length-ext} internal, ${ext} external). ${empty} have no readable text.`,'Give every link descriptive anchor text.'):add(links.length?'pass':'warn','Links',`${links.length} links (${links.length-ext} internal, ${ext} external)`,links.length?'':'Link to related pages on the site.');
+
+  return {checks:c,headings:hs.map(x=>({l:+x.tagName[1],t:x.textContent.trim()}))};
+}
+
+const ORDER={fail:0,warn:1,info:2,pass:3};
+const LBL={pass:'Pass',warn:'Improve',fail:'Fix',info:'Info'};
+const rows=list=>list.sort((a,b)=>ORDER[a.status]-ORDER[b.status]).map(x=>`<li><span class="st ${x.status}">${LBL[x.status]}</span><div><b>${esc(x.label)}</b><div class="d">${esc(x.detail)}</div>${x.fix?`<div class="fx">${esc(x.fix)}</div>`:''}</div></li>`).join('');
+let onpage=[], server=[];
+function paintScore(){
+  const scored=[...onpage,...server].filter(x=>x.status!=='info');
+  if(!scored.length){ $('au-score').textContent='–'; $('au-tally').innerHTML=''; $('au-arc').setAttribute('stroke-dasharray','0 264'); return; }
+  const n={pass:0,warn:0,fail:0}; scored.forEach(x=>n[x.status]++);
+  const score=Math.round((n.pass+n.warn*.5)/scored.length*100);
+  $('au-score').textContent=score;
+  const col=score>=80?'var(--good)':score>=55?'var(--warn)':'var(--bad)';
+  const arc=$('au-arc'); arc.setAttribute('stroke',col); arc.setAttribute('stroke-dasharray',(264*score/100).toFixed(1)+' 264');
+  $('au-tally').innerHTML=`<span class="pill fail">${n.fail} to fix</span><span class="pill warn">${n.warn} to improve</span><span class="pill pass">${n.pass} passed</span>`;
+}
+function renderOnpage(html,ctx){
+  const r=audit(html,ctx); onpage=r.checks;
+  $('au-checks').innerHTML=rows(r.checks);
+  $('au-outline').innerHTML=r.headings.length?r.headings.map(x=>`<li style="padding-left:${(x.l-1)*16}px"><span style="color:var(--accent)">H${x.l}</span> ${esc(x.t)}</li>`).join(''):'<li>No headings found</li>';
+  paintScore();
+  return r;
+}
+function setStatus(msg,err){ const el=$('au-status'); el.hidden=!msg; el.innerHTML=msg||''; el.classList.toggle('err',!!err); }
+async function api(path){
+  const res=await fetch(path); let j; try{j=await res.json()}catch(e){throw new Error('The server returned an unexpected response.')}
+  if(!res.ok) throw new Error(j.error||'Request failed.'); return j;
+}
+const kb=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.round(b/1024)+' KB';
+
+function serverChecks(f){
+  const c=[]; const add=(status,label,detail,fix)=>c.push({status,label,detail,fix});
+  f.status===200?add('pass','HTTP status','200 OK'):add(f.status>=400?'fail':'warn','HTTP status',`The page returned ${f.status}.`,f.status>=400?'Google cannot index a page that returns an error.':'Return 200 for pages that should rank.');
+  /^https:/.test(f.finalUrl)?add('pass','HTTPS','Secure connection'):add('fail','HTTPS','The page loads over plain http.','Install an SSL certificate and 301-redirect http to https.');
+  if(!f.redirects.length) add('pass','Redirects','None');
+  else{
+    const chain=[...f.redirects.map(r=>`${r.status} ${r.url}`),f.finalUrl].join(' → ');
+    const temp=f.redirects.some(r=>r.status===302||r.status===307);
+    f.redirects.length>1?add('warn','Redirects',`${f.redirects.length} hops: ${chain}`,'Point links straight to the final URL. Each hop slows crawling.'):
+      temp?add('warn','Redirects',chain,'Use a 301 (permanent) redirect so ranking signals pass to the new URL.'):add('pass','Redirects',chain);
+  }
+  f.timeMs<800?add('pass','Server response',`${f.timeMs} ms`):add(f.timeMs<2000?'warn':'fail','Server response',`${f.timeMs} ms to load the HTML.`,'Aim for under 800 ms. Check hosting, caching and server-side code.');
+  f.bytes<500*1024?add('pass','HTML size',kb(f.bytes)):add('warn','HTML size',kb(f.bytes)+(f.truncated?' (cut off at 5 MB)':''),'Large HTML slows the first load. Move inline data and scripts to files.');
+  const enc=f.headers['content-encoding'];
+  enc?add('pass','Compression',enc):add('warn','Compression','The HTML is not compressed.','Turn on gzip or Brotli on the server or CDN.');
+  return c;
+}
+function robotsChecks(r,url){
+  const c=[]; const add=(status,label,detail,fix)=>c.push({status,label,detail,fix});
+  if(r.robots.found) r.blocked?add('fail','robots.txt',`This page is blocked by "${r.rule}".`,'Remove or narrow that rule so Google can crawl the page.'):add('pass','robots.txt',r.rule?`Found. Matching rule: ${r.rule}`:'Found. This page is allowed.');
+  else add('warn','robots.txt',r.robots.status?`Not found (status ${r.robots.status}).`:'Could not be loaded.','Add a robots.txt with a Sitemap line. Use the Robots & sitemap tab.');
+  const ok=r.sitemaps.filter(s=>s.valid);
+  if(!ok.length) add('warn','XML sitemap',`No valid sitemap at ${r.sitemaps.map(s=>s.url).join(', ')}.`,'Create a sitemap.xml and submit it in Search Console.');
+  else ok.forEach(s=>add('pass','XML sitemap',`${s.url}: ${s.isIndex?s.urls+' child sitemaps':s.urls+' URLs'}${!s.isIndex?(s.listsPage?'. Lists this page.':'. This page is not listed.'):''}`));
+  return c;
+}
+function gaugeCls(v){return v==null?'':v>=90?'g-good':v>=50?'g-mid':'g-bad'}
+function renderPsi(p){
+  const s=p.scores, g=(v,l)=>`<div class="gauge ${gaugeCls(v)}"><b>${v??'–'}</b><span>${l}</span></div>`;
+  const cat=x=>x>=0.9?'good':x>=0.5?'mid':'bad';
+  const fieldCat={FAST:'good',AVERAGE:'mid',SLOW:'bad'};
+  const labNames={fcp:'First Contentful Paint',lcp:'Largest Contentful Paint',tbt:'Total Blocking Time',cls:'Cumulative Layout Shift',si:'Speed Index'};
+  const fieldFmt={LCP:v=>(v/1000).toFixed(1)+' s',INP:v=>v+' ms',CLS:v=>v.toFixed(2)};
+  let h=`<div class="gauges">${g(s.performance,'Performance')}${g(s.seo,'SEO')}${g(s.accessibility,'Accessibility')}${g(s.bestPractices,'Best practices')}</div>`;
+  const fk=Object.keys(p.field);
+  h+=`<div class="minihead">Real users, last 28 days</div>`;
+  h+=fk.length?`<dl class="kv">${fk.map(k=>`<dt>${k}</dt><dd class="${fieldCat[p.field[k].category]||''}">${fieldFmt[k](p.field[k].percentile)}</dd>`).join('')}</dl>`:`<p class="note">Not enough real-user traffic for Chrome field data. Lab results below still apply.</p>`;
+  h+=`<div class="minihead">Lab test (${p.strategy})</div><dl class="kv">${Object.entries(p.lab).map(([k,v])=>`<dt>${labNames[k]}</dt><dd class="${v.score!=null?cat(v.score):''}">${esc(v.value||'–')}</dd>`).join('')}</dl>`;
+  if(p.opportunities.length) h+=`<div class="minihead">Biggest speed fixes</div><ol class="opps">${p.opportunities.map(o=>`<li>${esc(o.title)}${o.savings?` <span>${esc(o.savings)}</span>`:''}</li>`).join('')}</ol>`;
+  $('au-psi').innerHTML=h;
+}
+function prefill(url,html){
+  try{
+    const d=new DOMParser().parseFromString(html,'text/html');
+    const set=(id,v)=>{if(v) $(id).value=v};
+    set('mt-title',d.querySelector('title')?.textContent.trim());
+    set('mt-desc',d.querySelector('meta[name="description" i]')?.getAttribute('content'));
+    set('mt-url',d.querySelector('link[rel="canonical" i]')?.getAttribute('href')||url);
+    set('mt-site',d.querySelector('meta[property="og:site_name" i]')?.getAttribute('content'));
+    set('mt-img',d.querySelector('meta[property="og:image" i]')?.getAttribute('content'));
+    $('rb-domain').value=new URL(url).origin;
+    meta(); robots();
+  }catch(e){}
+}
+
+let busy=false;
+$('au-form').addEventListener('submit',async e=>{
+  e.preventDefault(); if(busy) return;
+  let url=$('au-url').value.trim(); if(!url){ setStatus('Enter a page URL to audit.',true); $('au-url').focus(); return; }
+  if(!/^[a-z][a-z0-9+.-]*:\/\//i.test(url)) url='https://'+url;
+  busy=true; const go=$('au-go'); go.disabled=true; go.innerHTML='<span class="spin"></span> Auditing';
+  setStatus('<span class="spin"></span> Fetching the page…');
+  server=[]; onpage=[]; paintScore();
+  $('au-server').innerHTML='<li><span class="st info">…</span><div><b>Checking the server</b></div></li>';
+  $('au-psi').innerHTML='<p class="note"><span class="spin"></span> Waiting for the page fetch…</p>';
+  try{
+    const f=await api('/api/fetch?url='+encodeURIComponent(url));
+    renderOnpage(f.html,{url:f.finalUrl,headers:f.headers});
+    server=serverChecks(f); $('au-server').innerHTML=rows([...server]); paintScore();
+    $('au-sub').textContent='SEO score for '+f.finalUrl.replace(/^https?:\/\//,'');
+    prefill(f.finalUrl,f.html);
+    try{ history.replaceState(null,'','?url='+encodeURIComponent(f.finalUrl)); }catch(e){}
+    setStatus('<span class="spin"></span> Page checked. Loading robots.txt, sitemap and PageSpeed…');
+    $('au-psi').innerHTML='<p class="note"><span class="spin"></span> Running Google PageSpeed. This takes 20–60 seconds.</p>';
+    const rp=api('/api/robots?url='+encodeURIComponent(f.finalUrl)).then(r=>{ server=server.concat(robotsChecks(r,f.finalUrl)); $('au-server').innerHTML=rows([...server]); paintScore(); })
+      .catch(err=>{ server.push({status:'info',label:'robots.txt & sitemap',detail:err.message}); $('au-server').innerHTML=rows([...server]); });
+    const pp=api(`/api/pagespeed?url=${encodeURIComponent(f.finalUrl)}&strategy=${$('au-strategy').value}`).then(renderPsi)
+      .catch(err=>{ $('au-psi').innerHTML=`<p class="note status err">${esc(err.message)}</p>`; });
+    await Promise.all([rp,pp]);
+    setStatus('');
+  }catch(err){
+    setStatus(esc(err.message),true);
+    $('au-server').innerHTML=''; $('au-psi').innerHTML='';
+  }finally{ busy=false; go.disabled=false; go.textContent='Audit URL'; }
+});
+$('au-run').addEventListener('click',()=>{
+  const html=$('au-html').value.trim(); if(!html){ setStatus('Paste the page HTML first.',true); return; }
+  setStatus(''); server=[]; $('au-server').innerHTML='<li><span class="st info">Info</span><div><b>Server checks need a URL</b><div class="d">Pasted HTML only gets on-page checks.</div></div></li>';
+  $('au-psi').innerHTML='<p class="note">PageSpeed needs a live URL.</p>';
+  $('au-sub').textContent='SEO score for pasted HTML'; renderOnpage(html,{});
+});
+$('au-sample').addEventListener('click',()=>{$('au-html').value=SAMPLE;});
+// start: audit ?url= if present, otherwise show sample results
+(function(){
+  const q=new URLSearchParams(location.search).get('url');
+  if(q){ $('au-url').value=q; $('au-form').requestSubmit(); }
+  else { $('au-html').value=SAMPLE; $('au-sub').textContent='Sample page. Enter a URL above to audit a real site.'; renderOnpage(SAMPLE,{}); }
+})();
+
+/* ---------- META ---------- */
+const cv=document.createElement('canvas').getContext('2d');
+const px=(t,f)=>{cv.font=f;return cv.measureText(t).width};
+function clip(t,max,f){ if(px(t,f)<=max) return t; let s=t; while(s.length&&px(s+' ...',f)>max) s=s.slice(0,-1); return s.trim()+' ...'; }
+function meter(el,lab,w,max,lo){ const pct=Math.min(100,w/max*100); el.style.width=pct+'%'; el.className=w>max?'over':w<lo?'low':''; lab.textContent=Math.round(w)+' / '+max+' px'; lab.className='count '+(w>max?'over':w<lo?'low':'ok'); }
+function meta(){
+  const v=id=>$(id).value.trim();
+  const t=v('mt-title'), d=v('mt-desc'), u=v('mt-url'), s=v('mt-site'), img=v('mt-img'), type=v('mt-type'), loc=v('mt-locale'), tw=v('mt-tw'), noidx=$('mt-noindex').checked;
+  counter($('mt-title-c'),t.length,30,60); counter($('mt-desc-c'),d.length,70,160);
+  let host='example.com', path=''; try{const x=new URL(u); host=x.hostname; path=x.pathname.split('/').filter(Boolean).join(' › ');}catch(e){}
+  $('sp-name').textContent=s||host; $('sp-url').textContent='https://'+host+(path?' › '+path:'');
+  $('sp-fav').textContent=(s||host||'?')[0].toUpperCase();
+  const tf='20px Arial', df='14px Arial';
+  $('sp-title').textContent=clip(t||'Page title',600,tf);
+  $('sp-desc').textContent=clip(d||'Add a meta description to control this text.',920,df);
+  meter($('sp-tm'),$('sp-tw'),px(t,tf),600,280); meter($('sp-dm'),$('sp-dw'),px(d,df),920,400);
+  const a=x=>x.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  const L=[];
+  L.push('<meta charset="utf-8">','<meta name="viewport" content="width=device-width, initial-scale=1">');
+  if(t) L.push(`<title>${a(t)}</title>`);
+  if(d) L.push(`<meta name="description" content="${a(d)}">`);
+  L.push(`<meta name="robots" content="${noidx?'noindex, nofollow':'index, follow'}">`);
+  if(u) L.push(`<link rel="canonical" href="${a(u)}">`);
+  L.push('','<!-- Open Graph: WhatsApp, Facebook, LinkedIn -->');
+  L.push(`<meta property="og:type" content="${type}">`);
+  if(t) L.push(`<meta property="og:title" content="${a(t)}">`);
+  if(d) L.push(`<meta property="og:description" content="${a(d)}">`);
+  if(u) L.push(`<meta property="og:url" content="${a(u)}">`);
+  if(img) L.push(`<meta property="og:image" content="${a(img)}">`,'<meta property="og:image:width" content="1200">','<meta property="og:image:height" content="630">');
+  if(s) L.push(`<meta property="og:site_name" content="${a(s)}">`);
+  if(loc) L.push(`<meta property="og:locale" content="${a(loc)}">`);
+  L.push('','<!-- X (Twitter) -->','<meta name="twitter:card" content="summary_large_image">');
+  if(tw) L.push(`<meta name="twitter:site" content="${a(tw)}">`);
+  if(t) L.push(`<meta name="twitter:title" content="${a(t)}">`);
+  if(d) L.push(`<meta name="twitter:description" content="${a(d)}">`);
+  if(img) L.push(`<meta name="twitter:image" content="${a(img)}">`);
+  $('mt-out').textContent=L.join('\n');
+}
+['mt-title','mt-desc','mt-url','mt-site','mt-type','mt-img','mt-locale','mt-tw','mt-noindex'].forEach(id=>$(id).addEventListener('input',meta));
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(meta);
+meta();
+
+/* ---------- SCHEMA ---------- */
+const SC={
+  LocalBusiness:[['name','Business name','Shree Textiles'],['url','Website','https://shreetextiles.in'],['telephone','Phone','+91-98765-43210'],['image','Photo or logo URL','https://shreetextiles.in/logo.png'],['street','Street address','Plot 12, Ring Road Textile Market'],['city','City','Surat'],['region','State','Gujarat'],['postal','PIN code','395002'],['country','Country code','IN'],['hours','Opening hours','Mo-Sa 10:00-19:00','Days and times, e.g. Mo-Sa 10:00-19:00'],['priceRange','Price range','₹₹'],['lat','Latitude','21.1950'],['lng','Longitude','72.8406'],['sameAs','Social profile URLs','https://instagram.com/shreetextiles\nhttps://facebook.com/shreetextiles','One per line','ta']],
+  Organization:[['name','Organization name','Shree Textiles'],['url','Website','https://shreetextiles.in'],['logo','Logo URL','https://shreetextiles.in/logo.png'],['telephone','Phone','+91-98765-43210'],['email','Email','sales@shreetextiles.in'],['sameAs','Social profile URLs','https://instagram.com/shreetextiles','One per line','ta']],
+  Product:[['name','Product name','Red Banarasi Silk Saree'],['image','Image URL','https://shreetextiles.in/img/banarasi-red.jpg'],['description','Description','Handwoven pure silk Banarasi saree with gold zari border and blouse piece.','','ta'],['brand','Brand','Shree Textiles'],['sku','SKU','BNR-RED-014'],['price','Price','8499'],['currency','Currency','INR'],['availability','Availability','InStock','InStock, OutOfStock or PreOrder'],['rating','Average rating','4.7','Leave blank if there are no real reviews'],['reviews','Number of reviews','38']],
+  FAQPage:[['faq','Questions and answers','Do you sell wholesale? | Yes. Dealers get factory rates on orders of 10 sarees or more.\nDo you ship outside Gujarat? | We ship across India in 3–6 working days.','One per line: question | answer','ta']],
+  Article:[['headline','Headline','How to Spot a Pure Silk Saree'],['image','Image URL','https://shreetextiles.in/blog/pure-silk.jpg'],['author','Author name','Meera Patel'],['date','Date published','2026-10-01','YYYY-MM-DD'],['publisher','Publisher','Shree Textiles'],['plogo','Publisher logo URL','https://shreetextiles.in/logo.png']]
+};
+function scFields(){
+  const t=$('sc-type').value;
+  $('sc-fields').innerHTML=SC[t].map(([k,l,v,hint,kind])=>`<label>${esc(l)}${hint?` <span class="hint">${esc(hint)}</span>`:''}${kind==='ta'?`<textarea id="sc-${t}-${k}" rows="4">${esc(v)}</textarea>`:`<input id="sc-${t}-${k}" value="${esc(v)}">`}</label>`).join('');
+  $('sc-fields').querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',scOut));
+  scOut();
+}
+function scOut(){
+  const t=$('sc-type').value, g=k=>($(`sc-${t}-${k}`)?.value||'').trim();
+  const lines=k=>g(k).split('\n').map(s=>s.trim()).filter(Boolean);
+  let o={'@context':'https://schema.org','@type':t};
+  const set=(obj,k,v)=>{if(v!==''&&v!=null&&!(Array.isArray(v)&&!v.length)&&!(typeof v==='object'&&!Array.isArray(v)&&!Object.keys(v).length)) obj[k]=v};
+  if(t==='LocalBusiness'){
+    ['name','url','telephone','image','priceRange'].forEach(k=>set(o,k,g(k)));
+    const ad={'@type':'PostalAddress'}; set(ad,'streetAddress',g('street')); set(ad,'addressLocality',g('city')); set(ad,'addressRegion',g('region')); set(ad,'postalCode',g('postal')); set(ad,'addressCountry',g('country'));
+    if(Object.keys(ad).length>1) o.address=ad;
+    if(g('lat')&&g('lng')) o.geo={'@type':'GeoCoordinates',latitude:+g('lat'),longitude:+g('lng')};
+    set(o,'openingHours',g('hours')); set(o,'sameAs',lines('sameAs'));
+  } else if(t==='Organization'){
+    ['name','url','logo','telephone','email'].forEach(k=>set(o,k,g(k))); set(o,'sameAs',lines('sameAs'));
+  } else if(t==='Product'){
+    ['name','image','description','sku'].forEach(k=>set(o,k,g(k)));
+    if(g('brand')) o.brand={'@type':'Brand',name:g('brand')};
+    if(g('price')){ o.offers={'@type':'Offer',price:g('price'),priceCurrency:g('currency')||'INR',availability:'https://schema.org/'+(g('availability')||'InStock')}; if(g('url')) o.offers.url=g('url'); }
+    if(g('rating')&&g('reviews')) o.aggregateRating={'@type':'AggregateRating',ratingValue:g('rating'),reviewCount:g('reviews')};
+  } else if(t==='FAQPage'){
+    o.mainEntity=lines('faq').map(l=>{const [q,...a]=l.split('|');return {'@type':'Question',name:q.trim(),acceptedAnswer:{'@type':'Answer',text:a.join('|').trim()}}}).filter(x=>x.name&&x.acceptedAnswer.text);
+  } else {
+    set(o,'headline',g('headline')); set(o,'image',g('image')); set(o,'datePublished',g('date'));
+    if(g('author')) o.author={'@type':'Person',name:g('author')};
+    if(g('publisher')){ o.publisher={'@type':'Organization',name:g('publisher')}; if(g('plogo')) o.publisher.logo={'@type':'ImageObject',url:g('plogo')}; }
+  }
+  $('sc-out').textContent='<script type="application/ld+json">\n'+JSON.stringify(o,null,2)+'\n<\/script>';
+}
+$('sc-type').addEventListener('change',scFields);
+scFields();
+
+/* ---------- SOCIAL ---------- */
+const slug=s=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,'');
+const cap=s=>s.replace(/\b\w/g,c=>c.toUpperCase());
+let soOff=new Set();
+function social(){
+  const v=id=>$(id).value.trim();
+  const brand=v('so-brand'), city=v('so-city'), country=v('so-country'), offer=v('so-offer'), cta=v('so-cta'), N=+v('so-n');
+  const niche=v('so-niche').split(',').map(s=>s.trim()).filter(Boolean);
+  const cs=slug(city), ct=slug(country);
+  const uniq=a=>[...new Set(a.filter(x=>x&&x.length>1))];
+  const words=uniq(niche.flatMap(n=>n.split(/\s+/)).map(slug)).filter(w=>w.length>3);
+  const main=words.slice(-1)[0]||'';
+  const groups=[
+    ['Niche',"what people search for",uniq(niche.map(slug))],
+    ['Local',"where you are",uniq([...niche.slice(0,3).map(n=>slug(n)+cs), cs&&main?cs+main:'', ct&&niche[0]?slug(niche[0])+ct:'', cs?cs+'shopping':''])],
+    ['Branded',"yours only",uniq([slug(brand), slug(brand)+cs])],
+    ['Community',"broader audience",uniq(words.slice(0,2).flatMap(w=>[w+'lovers',w+'collection'])).concat(ct?['madein'+ct]:[])]
+  ];
+  $('so-groups').innerHTML=groups.map(([g,hint,tags])=>`<div class="grp"><h3>${g} <span>${hint}</span></h3><div class="chips">${tags.map(t=>`<button type="button" class="chip${soOff.has(t)?'':' on'}" data-tag="${esc(t)}">#${esc(t)}</button>`).join('')}</div></div>`).join('');
+  // pick balanced order: niche, local, branded, niche, local, community...
+  const pools=groups.map(g=>g[2].filter(t=>!soOff.has(t)));
+  const pick=[]; let i=0;
+  while(pick.length<N&&pools.some(p=>p.length)){ const p=pools[i%pools.length]; if(p.length) pick.push(p.shift()); i++; }
+  $('so-tags').textContent=pick.map(t=>'#'+t).join(' ')||'Select at least one hashtag';
+  const name=`${brand} | ${cap(niche[0]||'')} ${city}`.trim();
+  $('so-name').textContent=name;
+  const nc=$('so-name-c'); nc.textContent=name.length+' / 64'; nc.className='count '+(name.length>64?'over':'ok');
+  const bio=[offer, city&&country?`📍 ${city}, ${country}`:city, cta?`👉 ${cta}`:''].filter(Boolean).join('\n');
+  $('so-bio').textContent=bio; counter($('so-bio-c'),[...bio].length,40,150);
+  const yt=uniq([...niche, ...niche.slice(0,3).map(n=>n+' '+city.toLowerCase()), brand.toLowerCase(), ...niche.slice(0,2).map(n=>n+' online'), ...niche.slice(0,2).map(n=>'latest '+n+' designs')]);
+  let out=[], len=0; yt.forEach(t=>{ if(len+t.length+(out.length?1:0)<=500){ out.push(t); len+=t.length+(out.length>1?1:0);} });
+  const ys=out.join(','); $('so-yt').textContent=ys;
+  const yc=$('so-yt-c'); yc.textContent=ys.length+' / 500'; yc.className='count ok';
+}
+$('so-groups').addEventListener('click',e=>{const b=e.target.closest('[data-tag]'); if(!b) return; const t=b.dataset.tag; soOff.has(t)?soOff.delete(t):soOff.add(t); social();});
+['so-brand','so-niche','so-city','so-country','so-offer','so-cta','so-n'].forEach(id=>$(id).addEventListener('input',social));
+social();
+
+/* ---------- KEYWORDS ---------- */
+function keywords(){
+  const seeds=$('kw-seed').value.split('\n').map(s=>s.trim().toLowerCase()).filter(Boolean);
+  const cities=$('kw-city').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const on=id=>$(id).checked; const rows=[]; const seen=new Set();
+  const add=(k,i)=>{k=k.replace(/\s+/g,' ').trim(); if(!seen.has(k)){seen.add(k);rows.push([k,i]);}};
+  const plural=s=>s.endsWith('s')?s:s+'s';
+  seeds.forEach(s=>{
+    if(on('kw-g-local')){ add(s+' near me','Local'); add(plural(s)+' shop near me','Local'); cities.forEach(c=>{add(s+' in '+c.toLowerCase(),'Local'); add(s+' shop in '+c.toLowerCase(),'Local'); add(c.toLowerCase()+' '+s+' manufacturer','Local');}); }
+    if(on('kw-g-com')){ ['best','latest','designer','pure','top'].forEach(m=>add(m+' '+s,'Commercial')); add(s+' designs','Commercial'); add(s+' for wedding','Commercial'); add(s+' vs '+(s.includes('silk')?'cotton saree':'silk saree'),'Commercial'); }
+    if(on('kw-g-tx')){ add('buy '+s+' online','Transactional'); add(s+' price','Transactional'); add(s+' wholesale','Transactional'); add(s+' manufacturer','Transactional'); add(s+' under 5000','Transactional'); add(s+' online shopping','Transactional'); }
+    if(on('kw-g-info')){ add('how to identify original '+s,'Informational'); add('how to wash '+s,'Informational'); add('what is '+s,'Informational'); add('which '+s+' is best','Informational'); add('how to drape '+s,'Informational'); }
+  });
+  $('kw-body').innerHTML=rows.length?rows.map(([k,i])=>`<tr><td class="k">${esc(k)}</td><td><span class="intent i-${i}">${i}</span></td></tr>`).join(''):'<tr><td colspan="2">Add a seed keyword to see ideas.</td></tr>';
+  $('kw-plain').textContent=rows.map(r=>r[0]).join('\n');
+  const n={}; rows.forEach(r=>n[r[1]]=(n[r[1]]||0)+1);
+  $('kw-tally').innerHTML=`<span class="pill pass">${rows.length} ideas</span>`+Object.entries(n).map(([k,c])=>`<span class="intent i-${k}">${c} ${k.toLowerCase()}</span>`).join('');
+}
+['kw-seed','kw-city','kw-g-local','kw-g-com','kw-g-tx','kw-g-info'].forEach(id=>$(id).addEventListener('input',keywords));
+keywords();
+
+/* ---------- ROBOTS ---------- */
+function robots(){
+  let d=$('rb-domain').value.trim().replace(/\/+$/,''); if(d&&!/^https?:\/\//.test(d)) d='https://'+d;
+  const norm=p=>p.startsWith('/')?p:'/'+p;
+  const paths=$('rb-paths').value.split('\n').map(s=>s.trim()).filter(Boolean).map(norm);
+  const block=$('rb-block').value.split('\n').map(s=>s.trim()).filter(Boolean).map(norm);
+  const freq=$('rb-freq').value, today=new Date().toISOString().slice(0,10);
+  $('rb-robots').textContent=['User-agent: *',...(block.length?block.map(b=>'Disallow: '+b):['Disallow:']),'',`Sitemap: ${d}/sitemap.xml`].join('\n');
+  const x=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  $('rb-sitemap').textContent=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...paths.map(p=>`  <url>\n    <loc>${x(d+(p==='/'?'/':p))}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${freq}</changefreq>\n    <priority>${p==='/'?'1.0':'0.8'}</priority>\n  </url>`),'</urlset>'].join('\n');
+}
+['rb-domain','rb-paths','rb-block','rb-freq'].forEach(id=>$(id).addEventListener('input',robots));
+robots();
+
+/* ---------- TOOLS ---------- */
+const TOOLS=[
+  ['Google data',[
+    ['Google Search Console','Clicks, rankings, indexing errors and sitemap submission for your own site.','https://search.google.com/search-console','Free'],
+    ['PageSpeed Insights','Core Web Vitals and speed fixes for mobile and desktop.','https://pagespeed.web.dev/','Free'],
+    ['Rich Results Test','Checks whether your schema qualifies for rich results.','https://search.google.com/test/rich-results','Free'],
+    ['Keyword Planner','Search volume ranges and keyword ideas. Needs a Google Ads account.','https://ads.google.com/home/tools/keyword-planner/','Free'],
+    ['Google Trends','Compare keyword interest over time and by state.','https://trends.google.com/','Free'],
+    ['Google Business Profile','Manage the Maps listing, reviews, photos and posts.','https://www.google.com/business/','Free']
+  ]],
+  ['Checks & validators',[
+    ['Schema Markup Validator','Validates any schema.org markup, not just Google features.','https://validator.schema.org/','Free'],
+    ['Facebook Sharing Debugger','Preview and refresh how links look on Facebook and WhatsApp.','https://developers.facebook.com/tools/debug/','Free'],
+    ['LinkedIn Post Inspector','Preview and refresh LinkedIn link cards.','https://www.linkedin.com/post-inspector/','Free'],
+    ['Bing Webmaster Tools','Search Console for Bing, with its own SEO scanner.','https://www.bing.com/webmasters','Free']
+  ]],
+  ['Keywords & competitors',[
+    ['Ahrefs Backlink Checker','Top backlinks and domain rating for any site.','https://ahrefs.com/backlink-checker','Free tier'],
+    ['Ubersuggest','Keyword volume, difficulty and competitor pages.','https://neilpatel.com/ubersuggest/','Free tier'],
+    ['AnswerThePublic','Questions people ask around a keyword.','https://answerthepublic.com/','Free tier'],
+    ['Screaming Frog SEO Spider','Desktop crawler for full-site audits.','https://www.screamingfrog.co.uk/seo-spider/','Free up to 500 URLs']
+  ]],
+  ['Images & learning',[
+    ['Squoosh','Compress images and convert to WebP in the browser.','https://squoosh.app/','Free'],
+    ['Google Search Central','Google\'s own SEO documentation and guidelines.','https://developers.google.com/search/docs','Free']
+  ]]
+];
+$('tl-list').innerHTML=TOOLS.map(([sec,items],i)=>`<h2 class="sec-title"${i===0?' style="margin-top:0"':''}>${sec}</h2><div class="tgrid">${items.map(([n,d,u,c])=>`<a class="tool" href="${u}" target="_blank" rel="noopener"><b>${esc(n)}</b><span>${esc(d)}</span><em>${esc(c)}</em></a>`).join('')}</div>`).join('');
+})();
+</script>
+</body>
+</html>
