@@ -1,6 +1,6 @@
 """Draws a 1200x630 cover for every guide in content/posts.json.
 Writes public/blog/covers/<slug>.webp (shown on the site) and .jpg (for social share previews),
-plus the site-wide share image public/og.png and the favicons.
+plus the site-wide share image public/og.png. (Favicons and the logo are fixed files in public/.)
 Run after adding guides:  python3 scripts/make-covers.py   (needs Pillow: pip install pillow)"""
 import json, os, sys
 try:
@@ -115,19 +115,6 @@ def cover(title, cat, minutes, out_base, kicker=None):
     im.save(out_base + '.webp', quality=82, method=6)
     im.save(out_base + '.jpg', quality=84, optimize=True, progressive=True)
 
-def favicons():
-    def icon(n):
-        s = n * 4; i = Image.new('RGBA', (s, s), (0, 0, 0, 0)); g = ImageDraw.Draw(i)
-        g.rounded_rectangle([0, 0, s - 1, s - 1], radius=int(s * .28), fill=INK)
-        m = int(s * .23); w = int(s * .12)
-        g.ellipse([m, m, s - m, s - m], outline=(42, 53, 80), width=w)
-        g.arc([m, m, s - m, s - m], start=-90, end=170, fill=MARK, width=w)
-        return i.resize((n, n), Image.LANCZOS)
-    pub = os.path.join(ROOT, 'public')
-    icon(48).save(os.path.join(pub, 'favicon.ico'), sizes=[(16, 16), (32, 32), (48, 48)])
-    icon(180).save(os.path.join(pub, 'apple-touch-icon.png'))
-    open(os.path.join(pub, 'favicon.svg'), 'w').write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#0b1220"/><circle cx="16" cy="16" r="8.5" fill="none" stroke="#2a3550" stroke-width="4"/><path d="M16 7.5a8.5 8.5 0 1 1-8.4 9.8" fill="none" stroke="#ffe36e" stroke-width="4"/></svg>')
-
 if __name__ == '__main__':
     data = json.load(open(os.path.join(ROOT, 'content', 'posts.json')))
     for p in data['posts']:
@@ -135,5 +122,4 @@ if __name__ == '__main__':
     cover('Free SEO audit and toolkit. Every check, on one desk.', 'technical', 0, os.path.join(ROOT, 'public', 'og'), kicker='Free · No signup')
     Image.open(os.path.join(ROOT, 'public', 'og.jpg')).save(os.path.join(ROOT, 'public', 'og.png'), optimize=True)
     os.remove(os.path.join(ROOT, 'public', 'og.webp')); os.remove(os.path.join(ROOT, 'public', 'og.jpg'))
-    favicons()
-    print(f"Drew {len(data['posts'])} covers, og.png and favicons")
+    print(f"Drew {len(data['posts'])} covers and og.png")
