@@ -35,6 +35,8 @@ npm start
 | `ADSENSE_SLOT_SIDE` | Ad unit ID for the sidebar, desktop only (vertical display ad) |
 | `ADSENSE_SLOT_BOTTOM` | Ad unit ID below the results and on About/Privacy (responsive display ad) |
 | `ADS_PREVIEW` | Set to `1` to show dashed boxes where ads will go, for layout testing |
+| `SIMILARWEB_API_KEY` | Turns on the website traffic checker (/website-traffic). From Similarweb: Settings → Account → Data Tools → Generate a new API key. The key needs an active API plan |
+| `SIMILARWEB_PROMPT_CAMPAIGN_ID` | Optional. ID of a Similarweb Gen AI prompt-tracking campaign, for the Top prompts section |
 | `ALLOW_PRIVATE` | Set to `1` only for local testing, to audit localhost or LAN sites. Never set it on a public server. |
 
 ## Google AdSense
@@ -47,6 +49,14 @@ npm start
 6. In AdSense → Privacy & messaging, create a European regulations (GDPR) message. Google requires it for visitors from the EEA, UK and Switzerland.
 
 Rules the code already follows: each ad is labelled "Advertisement", ads are not placed next to buttons, ads are never refreshed when switching tabs, and empty slots collapse. Don't click your own ads, and don't ask visitors to click them; AdSense bans accounts for this.
+
+## Website traffic checker
+
+`/website-traffic` shows Similarweb estimates for any domain: visits over the last 12 months, unique visitors, visit duration, pages per visit, bounce rate, global, country and category rank, device split, traffic sources, top 10 countries, top 50 keywords, AI chatbot traffic by platform and, with a campaign connected, top prompts.
+
+- Each new report makes about 10 Similarweb API calls, which use your data credits. Reports are cached for 24 hours per domain and country, and each visitor can run 20 new reports an hour.
+- Without `SIMILARWEB_API_KEY` the page shows a sample report, clearly labelled as made-up numbers.
+- If a section is not included in your Similarweb plan, that section shows a message and the rest of the report still loads.
 
 ## Deploy
 
@@ -69,7 +79,8 @@ Put it behind HTTPS. If it is for the team only, add a login or IP restriction i
 ## Files
 
 ```
-server.js                 Pages, blog routes, ads.txt, sitemap, RSS and the API (/api/fetch, /api/robots, /api/pagespeed)
+server.js                 Pages, blog routes, ads.txt, sitemap, RSS and the API (/api/fetch, /api/robots, /api/pagespeed, /api/traffic)
+lib/similarweb.js         Similarweb API v5 client for the traffic checker
 lib/blog.js               Blog index, category pages, guide pages and RSS
 views/*.html              One file per page. Each starts with <!--@meta {...}--> holding its title, description and FAQ
 views/partials/           Shared head, header and footer

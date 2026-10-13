@@ -65,6 +65,7 @@ const VIEW_FILES = {
   keywords: path.join(__dirname, 'views', 'keyword-ideas.html'),
   robots: path.join(__dirname, 'views', 'robots-txt-sitemap-generator.html'),
   tools: path.join(__dirname, 'views', 'free-seo-tools.html'),
+  traffic: path.join(__dirname, 'views', 'website-traffic.html'),
   about: path.join(__dirname, 'views', 'about.html'),
   privacy: path.join(__dirname, 'views', 'privacy.html'),
   terms: path.join(__dirname, 'views', 'terms.html'),
@@ -77,7 +78,7 @@ const VIEW_FILES = {
 const ROUTES = {
   '/': 'home', '/seo-audit': 'audit', '/meta-tag-generator': 'meta', '/schema-generator': 'schema',
   '/hashtag-generator': 'social', '/keyword-ideas': 'keywords', '/robots-txt-sitemap-generator': 'robots',
-  '/free-seo-tools': 'tools', '/about': 'about', '/contact': 'contact', '/privacy': 'privacy', '/terms': 'terms',
+  '/free-seo-tools': 'tools', '/website-traffic': 'traffic', '/about': 'about', '/contact': 'contact', '/privacy': 'privacy', '/terms': 'terms',
 };
 const cache = {};
 const read = key => (process.env.NODE_ENV === 'production' && cache[key]) || (cache[key] = fs.readFileSync(VIEW_FILES[key], 'utf8'));
@@ -89,6 +90,7 @@ function renderFaq(faq) {
 }
 
 const TOOL_LINKS = [
+  ['traffic', '/website-traffic', 'Website traffic', 'Visits, keywords, countries, AI', '<path d="M2.5 13.5 6 9l3 2.5 4.5-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 5.5h3v3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'],
   ['audit', '/seo-audit', 'SEO audit', 'Checks on any URL', '<circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5A5.5 5.5 0 0 1 13.5 8" fill="none" stroke="currentColor" stroke-width="2.6"/>'],
   ['meta', '/meta-tag-generator', 'Meta tags', 'Title, description, share tags', '<path d="M2.5 4h11M2.5 8h11M2.5 12h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>'],
   ['schema', '/schema-generator', 'Schema', 'JSON-LD structured data', '<path d="M6 3c-2 0-2 1.5-2 2.5S3.5 8 2.5 8C3.5 8 4 9 4 10.5S4 13 6 13M10 3c2 0 2 1.5 2 2.5s.5 2.5 1.5 2.5c-1 0-1.5 1-1.5 2.5S12 13 10 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'],
@@ -392,6 +394,24 @@ app.get('/api/pagespeed', async (req, res) => {
       .slice(0, 6).map(a => ({ title: a.title, savings: a.displayValue || '' }));
     res.json({ strategy, scores: { performance: score('performance'), seo: score('seo'), accessibility: score('accessibility'), bestPractices: score('best-practices') }, lab, field, opportunities });
   } catch (e) { res.status(e.status || 502).json({ error: e.name === 'TimeoutError' ? 'PageSpeed took too long. Try again.' : e.message }); }
+});
+
+/* ---------- API: website traffic (Similarweb) ---------- */
+const similarweb = require('./lib/similarweb');
+const trafficHits = new Map();
+app.get('/api/traffic/status', (req, res) => res.json({ configured: similarweb.configured(), prompts: similarweb.hasCampaign() }));
+app.get('/api/traffic', async (req, res) => {
+  if (!similarweb.configured()) return res.status(503).json({ error: 'Traffic data is not switched on yet. Add SIMILARWEB_API_KEY on the server.', code: 'not_configured' });
+  let domain = String(req.query.domain || '').trim().toLowerCase();
+  domain = domain.replace(/^[a-z][a-z0-9+.-]*:\/\//, '').replace(/^www\./, '').split(/[/?#]/)[0].replace(/:\d+$/, '');
+  if (!/^(?=.{3,253}$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(domain)) return res.status(400).json({ error: 'Enter a website domain, for example example.com.' });
+  const country = /^[a-z]{2}$/.test(String(req.query.country || '')) ? String(req.query.country) : 'ww';
+  // each report spends Similarweb credits, so limit fresh reports per visitor
+  const now = Date.now(), list = (trafficHits.get(req.ip) || []).filter(t => now - t < 60 * 60 * 1000);
+  if (list.length >= 20) return res.status(429).json({ error: 'You have checked 20 websites in the last hour. Try again later.' });
+  list.push(now); trafficHits.set(req.ip, list);
+  try { res.json(await similarweb.report(domain, country)); }
+  catch (e) { res.status(e.status || 502).json({ error: e.message, code: e.code || 'error' }); }
 });
 
 // API routes and pages are above; anything else is a 404 page
