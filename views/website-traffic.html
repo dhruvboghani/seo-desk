@@ -1,112 +1,156 @@
 <!--@meta {
-  "title": "Website Traffic Checker: Visits, Keywords, AI Traffic",
-  "description": "Check any website's estimated traffic: monthly visits, top keywords, rankings, top countries, traffic sources and AI chatbot traffic, from Similarweb data.",
+  "title": "Free Website Traffic Checker: Rank, Visits, Keywords",
+  "description": "Check any website's popularity rank, top countries, device split and Core Web Vitals free, and see real visits, keywords and AI traffic for your own site.",
   "path": "/website-traffic",
   "nav": "traffic",
   "name": "Website traffic checker",
   "app": "Rankdesk Website Traffic Checker",
   "scripts": ["traffic.js"],
   "faq": [
-    ["Where do these numbers come from?", "From Similarweb, which estimates traffic for millions of websites using a panel of real browsing data, partner data and machine learning models. The figures are estimates, not counts from the website's own analytics."],
-    ["Why don't the numbers match my Google Analytics?", "Analytics counts the visits on your own site, while Similarweb estimates them from outside. Small sites with little traffic are hardest to estimate and can differ a lot. Use the report to compare websites and spot trends, and use your own analytics for exact numbers."],
-    ["What is AI traffic?", "Visits that arrive from AI chatbots and assistants such as ChatGPT, Gemini, Perplexity, Copilot and Claude, when someone clicks a link in an AI answer. It is still a small share of traffic for most websites, but it is growing quickly."],
-    ["Why are some sections empty for small websites?", "Similarweb only publishes data when it has enough signals for a website and country. Very new or very small websites, and narrow country filters, may show no data for some sections."],
-    ["What are top prompts?", "Questions people ask AI assistants where this website is mentioned or cited. They come from the prompts tracked in a Similarweb Gen AI campaign, so they only appear when a campaign is connected."]
+    ["Can I see exactly how many visits any website gets for free?", "No free tool can. Exact visits are only known to the site owner through their analytics. Paid tools like Similarweb and Semrush estimate them from browsing panels. Rankdesk shows free popularity signals for any site, and real numbers for sites you own."],
+    ["Where does the data for any website come from?", "Popularity rank comes from the Tranco research list, popularity by country and categories from Cloudflare Radar, mobile and desktop share and Core Web Vitals from Google's Chrome UX Report, and the authority score from Open PageRank. All four are free sources."],
+    ["Is it safe to sign in with Google?", "Rankdesk asks only for read-only access to Search Console and Google Analytics. It cannot change anything in your accounts. Your sign-in is kept in an encrypted cookie in your browser, nothing is saved on our servers, and you can sign out or remove access at any time from your Google account."],
+    ["How is AI traffic measured for my site?", "Google Analytics records the website each visitor came from. Rankdesk counts visits from ChatGPT, Perplexity, Gemini, Copilot, Claude and other assistants, and shows which pages those visitors landed on."],
+    ["Why can't I see the prompts people typed into ChatGPT?", "AI assistants do not share prompts with websites, and no free tool can see them. Rankdesk shows the pages AI visitors land on instead, which tells you which content AI assistants recommend."]
   ]
 }-->
 <main id="main">
   <section class="tool-hero wrap">
     <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Website traffic</span></nav>
     <div class="load-in">
-      <h1 class="h1">See any website's <span class="hl">traffic.</span></h1>
-      <p class="lede">Monthly visits, top keywords, rankings, countries, traffic sources and AI chatbot traffic for any domain, in one report.</p>
-      <form class="trform" id="tr-form" novalidate>
-        <label class="trf-domain" for="tr-domain"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h14M10 3c2.6 2.4 2.6 11.6 0 14M10 3c-2.6 2.4-2.6 11.6 0 14" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
-          <span class="sr">Website domain</span><input id="tr-domain" name="domain" type="text" inputmode="url" autocomplete="url" placeholder="example.com" spellcheck="false"></label>
-        <label class="trf-country" for="tr-country"><span class="sr">Country</span>
-          <select id="tr-country" name="country">
-            <option value="ww">Worldwide</option><option value="in">India</option><option value="us">United States</option><option value="gb">United Kingdom</option>
-            <option value="ae">United Arab Emirates</option><option value="ca">Canada</option><option value="au">Australia</option><option value="de">Germany</option>
-            <option value="sg">Singapore</option><option value="fr">France</option><option value="br">Brazil</option><option value="id">Indonesia</option>
-          </select></label>
-        <button class="btn" type="submit" id="tr-go">Check traffic</button>
-      </form>
+      <h1 class="h1">Website traffic and popularity, <span class="hl">free.</span></h1>
+      <p class="lede">Check how popular any website is, or connect your own site to see real visits, keywords, countries and AI traffic.</p>
+      <div class="modes" role="tablist" aria-label="Report type">
+        <button type="button" role="tab" id="tab-any" aria-controls="pane-any" aria-selected="true">Any website<small>Free popularity data</small></button>
+        <button type="button" role="tab" id="tab-mine" aria-controls="pane-mine" aria-selected="false">My website<small>Real data from Google</small></button>
+      </div>
+
+      <div id="pane-any" role="tabpanel" aria-labelledby="tab-any">
+        <form class="trform" id="any-form" novalidate>
+          <label class="trf-domain" for="any-domain"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h14M10 3c2.6 2.4 2.6 11.6 0 14M10 3c-2.6 2.4-2.6 11.6 0 14" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+            <span class="sr">Website domain</span><input id="any-domain" type="text" inputmode="url" autocomplete="url" placeholder="example.com" spellcheck="false"></label>
+          <button class="btn" type="submit" id="any-go">Check website</button>
+        </form>
+      </div>
+
+      <div id="pane-mine" role="tabpanel" aria-labelledby="tab-mine" hidden>
+        <div class="gconnect" id="mine-connect"></div>
+      </div>
       <p class="note status" id="tr-status" role="status" aria-live="polite" hidden></p>
     </div>
   </section>
 
   <div class="wrap">
     <!--AD:top-->
-    <div class="sample-banner" id="tr-sample" hidden>
-      <b>Sample report.</b> These numbers are made up to show the layout. <span id="tr-sample-why">Enter a website above to see its real data.</span>
-    </div>
+    <div class="sample-banner" id="tr-sample" hidden><b>Sample report.</b> <span>These numbers are made up to show the layout.</span> <span id="tr-sample-why"></span></div>
 
-    <section class="tr-report" id="tr-report" aria-live="polite">
+    <!-- ===================== Any website ===================== -->
+    <section class="tr-report" id="rep-any" aria-live="polite">
       <div class="tr-head">
-        <div class="tr-site"><span class="tr-fav" id="tr-fav" aria-hidden="true">E</span><div style="min-width:0"><h2 id="tr-title">example.com</h2><p id="tr-sub">Loading…</p></div></div>
-        <div class="tr-actions"><button type="button" class="chip-btn" id="tr-csv" disabled>Download CSV</button></div>
+        <div class="tr-site"><span class="tr-fav" id="any-fav" aria-hidden="true">E</span><div style="min-width:0"><h2 id="any-title">example.com</h2><p id="any-sub"></p></div></div>
       </div>
-
-      <div class="tr-kpis" id="tr-kpis"></div>
-
+      <div class="tr-kpis k5" id="any-kpis"></div>
       <div class="tr-grid g-wide">
         <div class="panel tr-card">
-          <div class="panel-h"><h3>Visits over time</h3><span class="count" id="tr-visits-range"></span></div>
-          <div class="chart" id="ch-visits" role="img" aria-label="Monthly visits over the last 12 months"></div>
+          <div class="panel-h"><h3>Popularity rank over time</h3><span class="count">Tranco · lower is better</span></div>
+          <div class="chart" id="ch-rank"></div>
+        </div>
+        <div class="panel tr-card">
+          <div class="panel-h"><h3>Most popular in</h3><span class="count">Cloudflare Radar</span></div>
+          <div id="any-geo"></div>
+          <div id="any-cats" class="cat-row"></div>
+        </div>
+      </div>
+      <div class="tr-grid">
+        <div class="panel tr-card">
+          <div class="panel-h"><h3>Mobile vs desktop</h3><span class="count">Chrome users</span></div>
+          <div id="any-dev"></div>
+          <div class="chart chart-sm" id="ch-mobile"></div>
+        </div>
+        <div class="panel tr-card">
+          <div class="panel-h"><h3>Core Web Vitals</h3><span class="count">Real users, 75th percentile</span></div>
+          <div class="vitals" id="any-vitals"></div>
+        </div>
+      </div>
+      <div class="callout">
+        <div><b>Want visits, keywords and traffic sources?</b><p>Those numbers are private to each website's owner. If the site is yours, connect Google Search Console and Analytics for the full report.</p></div>
+        <button type="button" class="btn btn-ink" data-goto="mine">Use my website</button>
+      </div>
+    </section>
+
+    <!-- ===================== My website ===================== -->
+    <section class="tr-report" id="rep-mine" aria-live="polite" hidden>
+      <div class="tr-head">
+        <div class="tr-site"><span class="tr-fav" id="mine-fav" aria-hidden="true">E</span><div style="min-width:0"><h2 id="mine-title">example.com</h2><p id="mine-sub"></p></div></div>
+        <div class="tr-actions"><button type="button" class="chip-btn" id="mine-csv">Download CSV</button></div>
+      </div>
+      <div class="tr-kpis" id="mine-kpis"></div>
+      <div class="tr-grid g-wide">
+        <div class="panel tr-card">
+          <div class="panel-h"><h3>Visits over time</h3><span class="count" id="mine-visits-range">Sessions, Google Analytics</span></div>
+          <div class="chart" id="ch-visits"></div>
         </div>
         <div class="tr-stack">
           <div class="panel tr-card">
-            <div class="panel-h"><h3>Ranking</h3></div>
-            <div class="ranks" id="tr-rank"></div>
+            <div class="panel-h"><h3>Google ranking</h3><span class="count">Last 28 days</span></div>
+            <div class="ranks" id="mine-rank"></div>
           </div>
           <div class="panel tr-card">
-            <div class="panel-h"><h3>Device split</h3><span class="count" id="tr-dev-month"></span></div>
-            <div id="tr-devices"></div>
+            <div class="panel-h"><h3>Device split</h3><span class="count">Last 28 days</span></div>
+            <div id="mine-dev"></div>
           </div>
         </div>
       </div>
-
       <div class="tr-grid">
         <div class="panel tr-card">
-          <div class="panel-h"><h3>Traffic sources</h3><span class="count">Share of visits</span></div>
-          <div id="tr-channels"></div>
+          <div class="panel-h"><h3>Clicks from Google</h3><span class="count">Search Console, monthly</span></div>
+          <div class="chart chart-sm" id="ch-clicks"></div>
+        </div>
+        <div class="panel tr-card">
+          <div class="panel-h"><h3>Average position</h3><span class="count">Lower is better</span></div>
+          <div class="chart chart-sm" id="ch-pos"></div>
+        </div>
+      </div>
+      <div class="tr-grid">
+        <div class="panel tr-card">
+          <div class="panel-h"><h3>Traffic sources</h3><span class="count">Share of sessions, 28 days</span></div>
+          <div id="mine-channels"></div>
           <div class="minihead">Top individual sources</div>
-          <div id="tr-sources"></div>
+          <div id="mine-sources"></div>
         </div>
         <div class="panel tr-card">
           <div class="panel-h"><h3>Geography</h3><span class="count">Top 5 countries</span></div>
-          <div id="tr-geo"></div>
-          <details class="tr-more"><summary>Top 10 countries table</summary><div class="tbl"><table><thead><tr><th>Country</th><th class="num">Share</th><th class="num">Visits</th></tr></thead><tbody id="tr-geo-tbl"></tbody></table></div></details>
+          <div id="mine-geo"></div>
+          <details class="tr-more"><summary>Top 10 countries table</summary><div class="tbl"><table><thead><tr><th>Country</th><th class="num">Share</th><th class="num">Sessions</th></tr></thead><tbody id="mine-geo-tbl"></tbody></table></div></details>
         </div>
       </div>
-
       <div class="panel tr-card">
-        <div class="panel-h"><h3>Top keywords</h3><span class="count" id="tr-kw-count"></span></div>
-        <div class="tbl tr-kw"><table><thead><tr><th>Keyword</th><th class="num">Position</th><th class="num">Clicks</th><th>Traffic share</th><th>Intent</th><th>Top page</th></tr></thead><tbody id="tr-kw"></tbody></table></div>
+        <div class="panel-h"><h3>Top keywords</h3><span class="count">Search Console, last 28 days</span></div>
+        <div class="tbl tr-kw"><table><thead><tr><th>Keyword</th><th class="num">Clicks</th><th class="num">Impressions</th><th class="num">CTR</th><th class="num">Position</th></tr></thead><tbody id="mine-kw"></tbody></table></div>
       </div>
-
       <div class="tr-grid g-wide">
         <div class="panel tr-card">
-          <div class="panel-h"><h3>AI traffic distribution over time</h3><span class="count" id="tr-ai-total"></span></div>
-          <div class="legend" id="tr-ai-legend"></div>
-          <div class="chart" id="ch-ai" role="img" aria-label="Monthly visits from AI chatbots by platform"></div>
-          <details class="tr-more"><summary>AI traffic table</summary><div class="tbl"><table><thead><tr><th>Platform</th><th class="num">Visits, last month</th><th class="num">Share of AI traffic</th><th class="num">Visits, 12 months</th></tr></thead><tbody id="tr-ai-tbl"></tbody></table></div></details>
+          <div class="panel-h"><h3>AI traffic distribution over time</h3><span class="count" id="mine-ai-total"></span></div>
+          <div class="legend" id="mine-ai-legend"></div>
+          <div class="chart" id="ch-ai"></div>
+          <details class="tr-more"><summary>AI traffic table</summary><div class="tbl"><table><thead><tr><th>Platform</th><th class="num">Sessions, last month</th><th class="num">Share of AI traffic</th><th class="num">Sessions, 12 months</th></tr></thead><tbody id="mine-ai-tbl"></tbody></table></div></details>
         </div>
         <div class="panel tr-card">
-          <div class="panel-h"><h3>Top prompts</h3><span class="count">Last 30 days</span></div>
-          <div id="tr-prompts"></div>
+          <div class="panel-h"><h3>Pages AI visitors land on</h3><span class="count">Last 90 days</span></div>
+          <div id="mine-aipages"></div>
+          <p class="note" style="margin-top:12px">AI assistants don't share the prompts people type. These are the pages they send visitors to.</p>
         </div>
       </div>
-      <p class="note tr-foot" id="tr-foot">Traffic figures are Similarweb estimates. Compare websites and trends rather than reading them as exact counts.</p>
+      <p class="note tr-foot" id="mine-foot"></p>
     </section>
 
     <div class="prose-grid">
-      <div class="prose-card reveal"><h3>Compare, don't count</h3><p>Estimates are best for comparing your site with competitors and spotting trends over months. For exact numbers on your own site, use Google Analytics and Search Console.</p></div>
-      <div class="prose-card reveal" style="--d:1"><h3>Steal the keyword gaps</h3><p>Open a competitor's top keywords and look for searches you have no page for. Then use <a href="/keyword-ideas">keyword ideas</a> to plan the page.</p></div>
-      <div class="prose-card reveal" style="--d:2"><h3>Watch AI traffic</h3><p>If competitors get visits from ChatGPT or Perplexity and you don't, check which of their pages AI assistants cite, and make yours clearer and more complete.</p></div>
+      <div class="prose-card reveal"><h3>Rank, not visits</h3><p>Popularity rank compares websites with each other. A rank of 50,000 means about 49,999 websites are more popular. Use it to compare competitors, not to estimate visits.</p></div>
+      <div class="prose-card reveal" style="--d:1"><h3>Your own numbers are exact</h3><p>Search Console shows the searches that bring people to your site. Analytics shows every visit, from every source. Together they answer what no outside tool can.</p></div>
+      <div class="prose-card reveal" style="--d:2"><h3>Watch AI visitors</h3><p>If ChatGPT or Perplexity send you visitors, look at which pages they land on. Make those pages clearer and more complete, and write more like them.</p></div>
     </div>
     <section class="faq-wrap" style="margin-bottom:clamp(56px,7vw,96px)">
-      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About traffic estimates</h2></div>
+      <div class="section-head reveal"><span class="kicker">Questions</span><h2 class="h2">About website traffic data</h2></div>
       <div class="reveal" style="--d:1"><!--@faq--></div>
     </section>
   </div>

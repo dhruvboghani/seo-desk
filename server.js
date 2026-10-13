@@ -396,22 +396,48 @@ app.get('/api/pagespeed', async (req, res) => {
   } catch (e) { res.status(e.status || 502).json({ error: e.name === 'TimeoutError' ? 'PageSpeed took too long. Try again.' : e.message }); }
 });
 
-/* ---------- API: website traffic (Similarweb) ---------- */
-const similarweb = require('./lib/similarweb');
-const trafficHits = new Map();
-app.get('/api/traffic/status', (req, res) => res.json({ configured: similarweb.configured(), prompts: similarweb.hasCampaign() }));
-app.get('/api/traffic', async (req, res) => {
-  if (!similarweb.configured()) return res.status(503).json({ error: 'Traffic data is not switched on yet. Add SIMILARWEB_API_KEY on the server.', code: 'not_configured' });
-  let domain = String(req.query.domain || '').trim().toLowerCase();
-  domain = domain.replace(/^[a-z][a-z0-9+.-]*:\/\//, '').replace(/^www\./, '').split(/[/?#]/)[0].replace(/:\d+$/, '');
-  if (!/^(?=.{3,253}$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(domain)) return res.status(400).json({ error: 'Enter a website domain, for example example.com.' });
-  const country = /^[a-z]{2}$/.test(String(req.query.country || '')) ? String(req.query.country) : 'ww';
-  // each report spends Similarweb credits, so limit fresh reports per visitor
-  const now = Date.now(), list = (trafficHits.get(req.ip) || []).filter(t => now - t < 60 * 60 * 1000);
-  if (list.length >= 20) return res.status(429).json({ error: 'You have checked 20 websites in the last hour. Try again later.' });
-  list.push(now); trafficHits.set(req.ip, list);
-  try { res.json(await similarweb.report(domain, country)); }
-  catch (e) { res.status(e.status || 502).json({ error: e.message, code: e.code || 'error' }); }
+/* ---------- Website traffic: free popularity data + Google sign-in for your own site ---------- */
+const popularity = require('./lib/popularity');
+const google = require('./lib/google');
+const perHour = (map, max) => (req, res, next) => {
+  const now = Date.now(), list = (map.get(req.ip) || []).filter(t => now - t < 3600000);
+  if (list.length >= max) return res.status(429).json({ error: `You have run ${max} reports in the last hour. Try again later.` });
+  list.push(now); map.set(req.ip, list); next();
+};
+const cleanDomain = v => String(v || '').trim().toLowerCase().replace(/^[a-z][a-z0-9+.-]*:\/\//, '').replace(/^www\./, '').split(/[/?#]/)[0].replace(/:\d+$/, '');
+const validDomain = d => /^(?=.{3,253}$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(d);
+
+app.get('/api/traffic/status', (req, res) => {
+  const s = google.configured() ? google.session(req) : null;
+  res.json({ sources: popularity.sources(), google: google.configured(), signedIn: !!s, email: s?.m || '' });
+});
+app.get('/api/popularity', perHour(new Map(), 60), async (req, res) => {
+  const domain = cleanDomain(req.query.domain);
+  if (!validDomain(domain)) return res.status(400).json({ error: 'Enter a website domain, for example example.com.' });
+  try { res.json(await popularity.report(domain)); } catch (e) { res.status(502).json({ error: e.message }); }
+});
+
+app.get('/auth/google', (req, res) => {
+  if (!google.configured()) return res.redirect('/website-traffic?mode=mine&gerror=' + encodeURIComponent('Google sign-in is not set up on this server yet.'));
+  res.redirect(google.startUrl(req, res, siteUrl(req)));
+});
+app.get('/auth/google/callback', async (req, res) => {
+  if (req.query.error) return res.redirect('/website-traffic?mode=mine&gerror=' + encodeURIComponent(req.query.error === 'access_denied' ? 'Google sign-in was cancelled.' : 'Google sign-in failed.'));
+  try { await google.callback(req, res, siteUrl(req)); res.redirect('/website-traffic?mode=mine'); }
+  catch (e) { res.redirect('/website-traffic?mode=mine&gerror=' + encodeURIComponent(e.message)); }
+});
+app.post('/auth/google/logout', (req, res) => { google.logout(req, res); res.json({ ok: true }); });
+app.get('/api/own/properties', async (req, res) => {
+  if (!google.configured()) return res.status(503).json({ error: 'Google sign-in is not set up on this server yet.', code: 'not_configured' });
+  try { res.json(await google.properties(req, res)); } catch (e) { res.status(e.status || 502).json({ error: e.message, code: e.code }); }
+});
+app.get('/api/own/report', perHour(new Map(), 60), async (req, res) => {
+  if (!google.configured()) return res.status(503).json({ error: 'Google sign-in is not set up on this server yet.', code: 'not_configured' });
+  const site = String(req.query.site || '').slice(0, 300), property = String(req.query.property || '');
+  if (!site && !property) return res.status(400).json({ error: 'Choose a Search Console site or an Analytics property.' });
+  if (property && !/^properties\/\d+$/.test(property)) return res.status(400).json({ error: 'That Analytics property is not valid.' });
+  if (site && !/^(sc-domain:[a-z0-9.-]+|https?:\/\/\S+)$/i.test(site)) return res.status(400).json({ error: 'That Search Console site is not valid.' });
+  try { res.json(await google.report(req, res, site, property)); } catch (e) { res.status(e.status || 502).json({ error: e.message, code: e.code }); }
 });
 
 // API routes and pages are above; anything else is a 404 page

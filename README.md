@@ -35,8 +35,11 @@ npm start
 | `ADSENSE_SLOT_SIDE` | Ad unit ID for the sidebar, desktop only (vertical display ad) |
 | `ADSENSE_SLOT_BOTTOM` | Ad unit ID below the results and on About/Privacy (responsive display ad) |
 | `ADS_PREVIEW` | Set to `1` to show dashed boxes where ads will go, for layout testing |
-| `SIMILARWEB_API_KEY` | Turns on the website traffic checker (/website-traffic). From Similarweb: Settings → Account → Data Tools → Generate a new API key. The key needs an active API plan |
-| `SIMILARWEB_PROMPT_CAMPAIGN_ID` | Optional. ID of a Similarweb Gen AI prompt-tracking campaign, for the Top prompts section |
+| `CLOUDFLARE_API_TOKEN` | Free. Popularity bracket, top countries and categories in the traffic checker. Cloudflare dashboard → My Profile → API Tokens → Create Token → custom token with **Account → Radar → Read** |
+| `CRUX_API_KEY` | Free. Mobile/desktop split and Core Web Vitals. A Google Cloud API key with the **Chrome UX Report API** enabled. If not set, `PSI_API_KEY` is used |
+| `OPENPAGERANK_API_KEY` | Free. Authority score. Sign up at openpagerank.com |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Free. "My website" mode: Google sign-in for Search Console and Analytics (setup below) |
+| `SESSION_SECRET` | Any random string of 32+ characters. Encrypts the Google sign-in cookie |
 | `ALLOW_PRIVATE` | Set to `1` only for local testing, to audit localhost or LAN sites. Never set it on a public server. |
 
 ## Google AdSense
@@ -50,13 +53,29 @@ npm start
 
 Rules the code already follows: each ad is labelled "Advertisement", ads are not placed next to buttons, ads are never refreshed when switching tabs, and empty slots collapse. Don't click your own ads, and don't ask visitors to click them; AdSense bans accounts for this.
 
-## Website traffic checker
+## Website traffic checker (free)
 
-`/website-traffic` shows Similarweb estimates for any domain: visits over the last 12 months, unique visitors, visit duration, pages per visit, bounce rate, global, country and category rank, device split, traffic sources, top 10 countries, top 50 keywords, AI chatbot traffic by platform and, with a campaign connected, top prompts.
+`/website-traffic` has two modes. Both are free.
 
-- Each new report makes about 10 Similarweb API calls, which use your data credits. Reports are cached for 24 hours per domain and country, and each visitor can run 20 new reports an hour.
-- Without `SIMILARWEB_API_KEY` the page shows a sample report, clearly labelled as made-up numbers.
-- If a section is not included in your Similarweb plan, that section shows a message and the rest of the report still loads.
+**Any website** shows popularity signals for any domain:
+- popularity rank and its last 30 days, from the Tranco research list (no key needed)
+- popularity bracket, the countries where the site is most popular and its categories, from Cloudflare Radar (`CLOUDFLARE_API_TOKEN`)
+- mobile vs desktop share over time and Core Web Vitals, from Google's Chrome UX Report (`CRUX_API_KEY` or `PSI_API_KEY`)
+- authority score from Open PageRank (`OPENPAGERANK_API_KEY`)
+
+Visit counts, keywords and traffic sources for other people's websites are not available for free from any source.
+
+**My website** shows real data after the visitor signs in with Google (read-only): visits over 12 months, users, engagement, bounce rate, device split, traffic sources, top countries, AI assistant traffic by platform and the pages AI visitors land on (from Google Analytics 4), plus clicks, impressions, average position and top keywords (from Search Console).
+
+### Setting up Google sign-in
+
+1. In Google Cloud Console, create a project (or use the one with your PageSpeed key).
+2. **APIs & Services → Library**: enable **Google Search Console API**, **Google Analytics Data API** and **Google Analytics Admin API**. Enable **Chrome UX Report API** too for the free device data.
+3. **OAuth consent screen**: choose External, fill in the app name, support email and your domain, and add the scopes `webmasters.readonly` and `analytics.readonly`.
+4. **Credentials → Create credentials → OAuth client ID → Web application**. Add the authorised redirect URI `https://YOUR-DOMAIN/auth/google/callback` (for example `https://seo-all.vercel.app/auth/google/callback`).
+5. Put the client ID and secret in `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, set `SESSION_SECRET` to a long random string and `SITE_URL` to your live address, then redeploy.
+
+While the app is in Testing mode, only the Google accounts you add as test users (up to 100) can sign in. To open it to everyone, submit the app for Google verification from the consent screen page. The two scopes are classed as sensitive, so Google reviews the app first.
 
 ## Deploy
 
@@ -79,8 +98,9 @@ Put it behind HTTPS. If it is for the team only, add a login or IP restriction i
 ## Files
 
 ```
-server.js                 Pages, blog routes, ads.txt, sitemap, RSS and the API (/api/fetch, /api/robots, /api/pagespeed, /api/traffic)
-lib/similarweb.js         Similarweb API v5 client for the traffic checker
+server.js                 Pages, blog routes, ads.txt, sitemap, RSS and the API (/api/fetch, /api/robots, /api/pagespeed, /api/popularity, /api/own/*)
+lib/popularity.js         Free popularity data (Tranco, Cloudflare Radar, Chrome UX Report, Open PageRank)
+lib/google.js             Google sign-in, Search Console and Analytics 4 reports
 lib/blog.js               Blog index, category pages, guide pages and RSS
 views/*.html              One file per page. Each starts with <!--@meta {...}--> holding its title, description and FAQ
 views/partials/           Shared head, header and footer
